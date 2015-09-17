@@ -1,0 +1,198 @@
+package cn.swang.ui.view;
+
+import android.content.Context;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+
+import cn.swang.R;
+import cn.swang.app.IConstants;
+import cn.swang.utils.AudioManager;
+import cn.swang.utils.DialogManager;
+
+/**
+ * Created by sw on 2015/9/14.
+ */
+public class AudioRecorderButton extends Button implements AudioManager.AudioStateListener{
+
+    private static final int STATE_NORMAL = 1;
+    private static final int STATE_RECORDERING = 2;
+    private static final int STATE_WANT_CANCEL = 3;
+    private static final int DISTANCE_Y_CANCEL = 50;
+
+
+    private int mCurState = STATE_NORMAL;
+    private boolean isRecording = false;
+    private DialogManager mDialogManager;
+    private AudioManager mAudioManager;
+    private float mTime=0f;
+    //if or not touch longclick
+    private boolean mReady =false;
+
+    public AudioRecorderButton(Context context) {
+        this(context, null);
+    }
+
+    public AudioRecorderButton(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mDialogManager = new DialogManager(context);
+        String dir = Environment.getExternalStorageDirectory()+ IConstants.AUDIO_RECORD_PATH;
+        mAudioManager = AudioManager.getInstanse(dir);
+        mAudioManager.setOnAudioStateListener(this);
+
+        setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mReady=true;
+                mAudioManager.prepareAudio();
+                return false;
+            }
+        });
+    }
+
+    public interface AudioFinishRecorderListener{
+        void onAudioFinish(float seconds, String filePath);
+    }
+
+    private AudioFinishRecorderListener audioFinishRecorderListener;
+
+    public void setAudioFinishRecorderListener(AudioFinishRecorderListener listener){
+        audioFinishRecorderListener=listener;
+    }
+
+    private static final int MSG_AUDIO_PREPARED = 0X111;
+    private static final int MSG_AUDIO_CHANGED = 0X112;
+    private static final int MSG_AUDIO_DIMISS = 0X113;
+
+    private Runnable mGetVoiceLevelRunnable =new Runnable() {
+        @Override
+        public void run() {
+            while (isRecording){
+                try {
+                    Thread.sleep(100);
+                    mTime+=0.1f;
+                    mHandler.sendEmptyMessage(MSG_AUDIO_CHANGED);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MSG_AUDIO_PREPARED:
+                    mDialogManager.showRecordingDialog();
+                    isRecording = true;
+                    new Thread(mGetVoiceLevelRunnable).start();
+                    break;
+                case MSG_AUDIO_CHANGED:
+                    mDialogManager.updateVoiceLevel(mAudioManager.getVoiceLevel(7));
+                    break;
+                case MSG_AUDIO_DIMISS:
+                    mDialogManager.dimissDialog();
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void wellPrepared() {
+        mHandler.sendEmptyMessage(MSG_AUDIO_PREPARED);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        int x = (int)event.getX();
+        int y = (int)event.getY();
+        switch (action){
+            case MotionEvent.ACTION_DOWN:
+                changeState(STATE_RECORDERING);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(isRecording){
+                    if(wantToCancel(x,y)){
+                        changeState(STATE_WANT_CANCEL);
+                    }else {
+                        changeState(STATE_RECORDERING);
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if(!mReady){
+                    reset();
+                    return super.onTouchEvent(event);
+                }
+                if(!isRecording||mTime<0.6f){
+                    mDialogManager.tooShort();
+                    mAudioManager.cancel();
+                    mHandler.sendEmptyMessageDelayed(MSG_AUDIO_DIMISS, 1300);
+                }else if(mCurState==STATE_RECORDERING){//record success!
+                    mDialogManager.dimissDialog();
+                    mAudioManager.release();
+                    //callback
+                    if(audioFinishRecorderListener!=null){
+                        audioFinishRecorderListener.onAudioFinish(mTime,mAudioManager.getCurrentFilePath());
+                    }
+                }else if(mCurState==STATE_WANT_CANCEL){
+                    mDialogManager.dimissDialog();
+                    mAudioManager.cancel();
+                }
+                reset();
+                break;
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    private void reset() {
+        mReady=false;
+        isRecording=false;
+        changeState(STATE_NORMAL);
+        mTime=0f;
+    }
+
+    private boolean wantToCancel(int x, int y) {
+        if(x<0||x>getWidth()){
+            return true;
+        }
+        if(y<-DISTANCE_Y_CANCEL||y>getHeight()+DISTANCE_Y_CANCEL){
+            return true;
+        }
+        return false;
+    }
+
+    private void changeState(int state) {
+        if(mCurState!=state){
+            mCurState=state;
+            switch (state){
+                case STATE_NORMAL:
+                    setBackgroundResource(R.drawable.btn_recorder_normal);
+                    setText(R.string.str_recorder_normal);
+                    break;
+                case STATE_RECORDERING:
+                    setBackgroundResource(R.drawable.btn_recorder_recordering);
+                    setText(R.string.str_recorder_recording);
+                    if(isRecording){
+                        //
+                        mDialogManager.recording();
+                    }
+                    break;
+                case STATE_WANT_CANCEL:
+                    setBackgroundResource(R.drawable.btn_recorder_recordering);
+                    setText(R.string.str_recorder_want_cancel);
+                    mDialogManager.wantToCancel();
+                    break;
+            }
+        }
+    }
+
+
+}
