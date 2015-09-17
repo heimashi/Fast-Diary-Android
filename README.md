@@ -1,0 +1,2 @@
+# EASYDIARY
+test
