@@ -6,7 +6,7 @@
     android:layout_margin="2dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="4dp"
     card_view:cardElevation="2dp">
 
@@ -26,6 +26,8 @@
         android:id="@+id/today_note_iv"
         android:layout_width="160dp"
         android:layout_height="120dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
         android:adjustViewBounds="true"
         android:padding="5dp"
         android:scaleType="centerCrop"

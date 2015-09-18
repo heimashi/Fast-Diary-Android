@@ -19,8 +19,8 @@ public class SplashPresenter implements BasePresenter {
 
     private Context mContext = null;
     private ISplashView mSplashView = null;
-    public static final String INIT_DIARY_DATA_PREFERENCE = "init_diary_data_pre";
-    public static final String INIT_DIARY_DATA_PREFERENCE_STRING = "init_diary_data_preference_str";
+    public static final String INIT_DIARY_DATA_PREFERENCE = "init_diary_data_pref";
+    public static final String INIT_DIARY_DATA_PREFERENCE_STRING = "init_diary_data_preference_string";
 
     public SplashPresenter(Context context, ISplashView splashView) {
         if (null == splashView) {
@@ -103,7 +103,7 @@ public class SplashPresenter implements BasePresenter {
         if (hour >= 6 && hour <= 12) {
             resId = R.mipmap.morning;
         } else if (hour > 12 && hour <= 18) {
-            resId = R.mipmap.afternoon;
+            resId = R.drawable.afternoon;
         } else {
             resId = R.mipmap.night;
         }

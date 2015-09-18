@@ -18,12 +18,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,10 +37,8 @@ import java.util.Date;
 import java.util.List;
 
 import cn.swang.R;
-import cn.swang.app.GlobalData;
 import cn.swang.app.IConstants;
 import cn.swang.dao.DbService;
-import cn.swang.dao.LoadDiaryListener;
 import cn.swang.dao.LoadNoteListener;
 import cn.swang.dao.SaveNoteListener;
 import cn.swang.entity.DayCard;
@@ -53,7 +49,7 @@ import cn.swang.ui.view.AudioRecorderButton;
 import cn.swang.utils.CommonUtils;
 import cn.swang.utils.MediaManager;
 
-public class ListFragment extends BaseFragment implements SaveNoteListener,LoadNoteListener,View.OnClickListener,RecyclerViewAdapter.OnItemLongClickListener{
+public class ListFragment extends BaseFragment implements SaveNoteListener,DbService.DeleteNoteListener,LoadNoteListener,View.OnClickListener,RecyclerViewAdapter.OnItemLongClickListener{
 
 
     private static final int REQUEST_CODE_PICK_IMAGE = 1000;
@@ -69,11 +65,12 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
     private ImageView mSentBtn;
     private TextView mSentTv;
     private File cameraFile;
-    private FloatingActionButton mFab1,mFab2,mFab3;
+    private FloatingActionButton mFab1,mFab2,mFab3,mDeleteFab;
     private FrameLayout fabContainer;
     private AudioRecorderButton audioRecorderButton;
     private boolean isFabViewShowing = false;
     private boolean isRecordeStateSelected = false;
+    private List<Integer> noteCardList=new ArrayList<Integer>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +82,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
         mFab1=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_fab1);
         mFab2=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_fab2);
         mFab3=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_fab3);
+        mDeleteFab=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_delete_fab);
         audioRecorderButton=(AudioRecorderButton)mLinearLayout.findViewById(R.id.audio_recorder_bt);
         mInputView.setHint(getString(R.string.prompt_tint));
         mContentEt=mInputView.getEditText();
@@ -117,6 +115,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
         mFab1.setOnClickListener(this);
         mFab2.setOnClickListener(this);
         mFab3.setOnClickListener(this);
+        mDeleteFab.setOnClickListener(this);
         return mLinearLayout;
     }
 
@@ -155,6 +154,9 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
         audioRecorderButton.setVisibility(View.VISIBLE);
     }
     private void setFabContainerComeIn(){
+        cancelDeleteNote();
+        Animation bt_animation=AnimationUtils.loadAnimation(getContext(),R.anim.bt_rotate);
+        mSentBtn.startAnimation(bt_animation);
         isFabViewShowing=true;
         Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.bottom_in);
         fabContainer.setVisibility(View.VISIBLE);
@@ -162,15 +164,44 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
     }
 
     private void setFabContainerOut(){
+        cancelDeleteNote();
+        Animation bt_animation=AnimationUtils.loadAnimation(getContext(),R.anim.bt_rotate_back);
+        mSentBtn.startAnimation(bt_animation);
         isFabViewShowing=false;
         Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.bottom_out);
         fabContainer.startAnimation(animation);
         fabContainer.setVisibility(View.GONE);
     }
 
+    private void cancelDeleteNote(){
+        if(mDeleteFab.getVisibility()==View.VISIBLE){
+            for(Integer i:noteCardList){
+                datas.get(i).setIsSelected(false);
+            }
+            noteCardList.clear();
+            mDeleteFab.setVisibility(View.GONE);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void onItemLongClick(View v, int position) {
-        datas.get(position).setIsSelected(true);
+        if(datas.get(position).isSelected()){
+            noteCardList.remove((Object)position);
+            datas.get(position).setIsSelected(false);
+        }else {
+            noteCardList.add(position);
+            datas.get(position).setIsSelected(true);
+        }
+        if(noteCardList.size()==0){
+            mDeleteFab.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.right_out));
+            mDeleteFab.setVisibility(View.GONE);
+        }else {
+            if(mDeleteFab.getVisibility()!=View.VISIBLE){
+                mDeleteFab.setVisibility(View.VISIBLE);
+                mDeleteFab.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.right_in));
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -205,6 +236,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
                 new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
                 REQUEST_CODE_CAMERA);
     }
+
 
 
     @Override
@@ -287,6 +319,16 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
         noteCard.setImgPath(filePath);
         noteCard.setDate(new Date());
         dbService.saveNote(noteCard, this);
+    }
+    @Override
+    public void onDeleteSuccess(List<NoteCard> list) {
+        datas.clear();
+        noteCardList.clear();
+        mDeleteFab.setVisibility(View.GONE);
+        for(NoteCard noteCard:list){
+            datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -372,6 +414,13 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
                     setRecordeStateSelected();
                 }
                 break;
+            case R.id.list_delete_fab:
+                List<NoteCard> mlist=new ArrayList<NoteCard>();
+                for (Integer i:noteCardList){
+                    mlist.add(datas.get(i).getNoteCard());
+                }
+                dbService.deleteNote(mlist,this);
+                break;
             case R.id.other_btn_view:
                 if(isFabViewShowing){
                     setFabContainerOut();
@@ -384,5 +433,6 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,LoadN
                 break;
         }
     }
+
 
 }

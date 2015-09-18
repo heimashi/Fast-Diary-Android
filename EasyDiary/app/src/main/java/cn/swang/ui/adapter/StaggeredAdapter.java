@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,12 +36,22 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<DayCard> datas;
+    private List<DayCardWrapper> datas;
     private int baseHeight = 120;
     private int height = 80;
     public static final String INTENT_DAYCARD_EXTRAS = "intent_daycard_extras";
 
-    public StaggeredAdapter(Context mContext, List<DayCard> datas) {
+    public interface OnItemLongClickListener {
+        void onItemLongClick(View v, int position);
+    }
+
+    private OnItemLongClickListener onItemLongClickListener;
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.onItemLongClickListener = listener;
+    }
+
+    public StaggeredAdapter(Context mContext, List<DayCardWrapper> datas) {
         this.mContext = mContext;
         this.datas=datas;
         mInflater = LayoutInflater.from(mContext);
@@ -56,15 +67,26 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(final StaggeredAdapter.ViewHolder holder, final int position) {
-        DayCard dayCard = datas.get(position);
-//        ViewGroup.LayoutParams layoutParams = holder.mView.getLayoutParams();
-//        int count = dayCard.getNoteSet().size();
-//        layoutParams.height = count<6? baseHeight+count*height: baseHeight+4*height;
+        DayCardWrapper dayCardWrapper=datas.get(position);
+        DayCard dayCard =dayCardWrapper.getDayCard();
         final View view = holder.mView;
-
+        if(onItemLongClickListener!=null){
+            holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onItemLongClickListener.onItemLongClick(v,holder.getAdapterPosition());
+                    return false;
+                }
+            });
+        }
         String dayString = dayCard.getYear()+"/"+dayCard.getMouth()+"/"+dayCard.getDay();
         holder.mTextView.setText(dayString);
         updateNoteView(holder, dayCard.getNoteSet());
+        if(dayCardWrapper.isSelected()){
+            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_70_sr_color_primary));
+        }else {
+            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
+        }
         if(!TextUtils.isEmpty(dayCard.getDayImagePath())){
             holder.mImageItem.setVisibility(View.VISIBLE);
             String imageUrl = ImageDownloader.Scheme.FILE.wrap(dayCard.getDayImagePath());
@@ -80,7 +102,6 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
                     }
                 }
             });
-            //displayImage(imageUrl,holder.mImageItem);
         }else {
             holder.mImageItem.setVisibility(View.GONE);
         }
@@ -92,7 +113,7 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         Intent intent = new Intent(mContext, DetailActivity.class);
-                        intent.putExtra(INTENT_DAYCARD_EXTRAS, datas.get(holder.getAdapterPosition()));
+                        intent.putExtra(INTENT_DAYCARD_EXTRAS, datas.get(holder.getAdapterPosition()).getDayCard());
                         mContext.startActivity(intent);
                     }
                 });
@@ -104,7 +125,7 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
     void updateNoteView(ViewHolder holder,List<NoteCard> mList){
         int index = 0, t=0;
         TextView tvList[] = {holder.mTvItem1,holder.mTvItem2,holder.mTvItem3,holder.mTvItem4,holder.mTvItem5,holder.mTvItem6};
-        while (index<mList.size()&&t<6){
+        while (mList!=null&&index<mList.size()&&t<6){
             if(!TextUtils.isEmpty(mList.get(index).getContent())){
                 tvList[t].setVisibility(View.VISIBLE);
                 tvList[t++].setText(mList.get(index).getContent());
@@ -148,4 +169,31 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
             mImageItem=(ImageView)view.findViewById(R.id.note_item_image_view);
         }
     }
+
+    public static class DayCardWrapper {
+        private DayCard dayCard;
+        private boolean isSelected;
+
+        public DayCardWrapper(DayCard dayCard) {
+            this.dayCard = dayCard;
+            this.isSelected = false;
+        }
+
+        public DayCard getDayCard() {
+            return dayCard;
+        }
+
+        public void setDayCard(DayCard dayCard) {
+            this.dayCard = dayCard;
+        }
+
+        public boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setIsSelected(boolean isSelected) {
+            this.isSelected = isSelected;
+        }
+    }
+
 }

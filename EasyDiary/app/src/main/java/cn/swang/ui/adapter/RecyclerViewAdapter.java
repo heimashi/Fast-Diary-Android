@@ -66,10 +66,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(final RecyclerViewAdapter.ViewHolder holder, final int position) {
         final View view = holder.mView;
         if (onItemLongClickListener != null) {
-            view.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onItemLongClickListener.onItemLongClick(v, position);
+                    onItemLongClickListener.onItemLongClick(v, holder.getAdapterPosition());
                     return false;
                 }
             });
@@ -77,7 +77,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final NoteCardWrapper cardWrapper = datas.get(position);
         final NoteCard card=cardWrapper.getNoteCard();
         if(cardWrapper.isSelected()){
-            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_10_sr_color_primary));
+            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_70_sr_color_primary));
+        }else {
+            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
         }
         if (!TextUtils.isEmpty(card.getContent())) {
             holder.mRecoderView.setVisibility(View.GONE);
@@ -90,12 +92,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.mImageView.setVisibility(View.VISIBLE);
             final String imageUrl = ImageDownloader.Scheme.FILE.wrap(card.getImgPath());
             ImageLoader.getInstance().displayImage(imageUrl, holder.mImageView, ImageLoaderHelper.getInstance(mContext).getDisplayOptions());
-            holder.mImageView.setOnClickListener(new View.OnClickListener() {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ImageDetailActivity.class);
-                    intent.putExtra(ImageDetailActivity.DETAIL_IMAGE_PATH, imageUrl);
-                    mContext.startActivity(intent);
+                    if(holder.mImageView.getVisibility()==View.VISIBLE){
+                        Intent intent = new Intent(mContext, ImageDetailActivity.class);
+                        intent.putExtra(ImageDetailActivity.DETAIL_IMAGE_PATH, imageUrl);
+                        mContext.startActivity(intent);
+                    }
                 }
             });
         } else if (!TextUtils.isEmpty(card.getVoicePath())) {

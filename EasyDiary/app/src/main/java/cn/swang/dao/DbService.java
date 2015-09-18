@@ -37,8 +37,12 @@ public class DbService {
         new SaveNoteAsyncTask(noteCard, noteListener).execute();
     }
 
-    public void deleteNote(NoteCard noteCard) {
+    public void deleteNote(List<NoteCard> noteCardList, DeleteNoteListener deleteNoteListener) {
+        new DeleteNoteAsyncTask(noteCardList,deleteNoteListener).execute();
+    }
 
+    public void deleteDayCard(List<DayCard> dayCardList, DeleteDayCardListener deleteDayCardListener) {
+        new DeleteDayCardAsyncTask(dayCardList,deleteDayCardListener).execute();
     }
 
     public void loadDiary(DayCard dayCard, LoadNoteListener loadNoteListener) {
@@ -146,6 +150,83 @@ public class DbService {
             }
         }
     }
+
+    public interface DeleteDayCardListener{
+        void onDeleteDayCardSuccess(List<DayCard> list);
+    }
+
+    class DeleteDayCardAsyncTask extends AsyncTask<Void, Void, List<DayCard>> {
+        List<DayCard> dayCardList;
+        DeleteDayCardListener dayCardListener;
+
+        public DeleteDayCardAsyncTask(List<DayCard> dayCardList, DeleteDayCardListener dayCardListener) {
+            this.dayCardList = dayCardList;
+            this.dayCardListener = dayCardListener;
+        }
+
+        @Override
+        protected List<DayCard> doInBackground(Void... params) {
+            if (dayCardList == null||dayCardList.size()==0) return null;
+            for(DayCard mDay: dayCardList){
+                for(NoteCard mNote: mDay.getNoteSet()){
+                    noteCardDao.delete(mNote);
+                }
+                dayCardDao.delete(mDay.getDay_id());
+            }
+            List<DayCard> datas = dayCardDao.fecthAll();
+            for (DayCard dayCard : datas) {
+                dayCard.setNoteSet(noteCardDao.findAllByDayid(dayCard));
+            }
+            return datas;
+        }
+
+        @Override
+        protected void onPostExecute(List<DayCard> list) {
+            super.onPostExecute(list);
+            if (dayCardListener != null) {
+                dayCardListener.onDeleteDayCardSuccess(list);
+            }
+        }
+    }
+
+    public interface DeleteNoteListener {
+        void onDeleteSuccess(List<NoteCard> list);
+
+    }
+
+    class DeleteNoteAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
+        List<NoteCard> noteCardList;
+        DeleteNoteListener noteListener;
+
+        public DeleteNoteAsyncTask(List<NoteCard> noteCard, DeleteNoteListener noteListener) {
+            this.noteCardList = noteCard;
+            this.noteListener = noteListener;
+        }
+
+        @Override
+        protected List<NoteCard> doInBackground(Void... params) {
+            if (noteCardList == null||noteCardList.size()==0) return null;
+            DayCard dayCard = new DayCard();
+            dayCard.setDay_id(noteCardList.get(0).getDay_id());
+            for(NoteCard noteCard: noteCardList){
+                noteCardDao.delete(noteCard);
+            }
+            List<NoteCard> lists = noteCardDao.findAllByDayid(dayCard);
+            if (lists == null || lists.size() == 0) {
+                dayCardDao.delete(dayCard.getDay_id());
+            }
+            return lists;
+        }
+
+        @Override
+        protected void onPostExecute(List<NoteCard> list) {
+            super.onPostExecute(list);
+            if (noteListener != null) {
+                noteListener.onDeleteSuccess(list);
+            }
+        }
+    }
+
 
     class SaveNoteAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
         NoteCard noteCard;
