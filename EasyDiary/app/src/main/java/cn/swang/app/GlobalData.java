@@ -37,6 +37,8 @@ public abstract class GlobalData {
 
     public static int dayNow;
 
+    public static String dayCardImagePath;
+
     public static long dayCard_id = -1;
 
     public static DisplayMetrics screenMatrix;

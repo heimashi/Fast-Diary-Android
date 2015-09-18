@@ -1,5 +1,9 @@
 package cn.swang.ui.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +36,7 @@ public class PastFragment extends BaseFragment implements LoadDiaryListener,Stag
     private List<StaggeredAdapter.DayCardWrapper> datas=new ArrayList<StaggeredAdapter.DayCardWrapper>();
     private StaggeredAdapter adapter;
     private DbService dbService;
+    private UpdateNoteBroadcastReceiver updateNoteBroadcastReceiver;
     private List<Integer> dayCardList=new ArrayList<Integer>();
 
     @Override
@@ -43,9 +48,15 @@ public class PastFragment extends BaseFragment implements LoadDiaryListener,Stag
         return mRelativeLayout;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(UPDATE_NOTE_ACTION);
+        updateNoteBroadcastReceiver = new UpdateNoteBroadcastReceiver();
+        getActivity().registerReceiver(updateNoteBroadcastReceiver,intentFilter);
+
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         adapter=new StaggeredAdapter(getActivity(),datas);
         mRecyclerView.setAdapter(adapter);
@@ -64,7 +75,11 @@ public class PastFragment extends BaseFragment implements LoadDiaryListener,Stag
         });
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(updateNoteBroadcastReceiver);
+    }
 
     @Override
     public void onLoadDiarySuccess(List<DayCard> list) {
@@ -111,5 +126,27 @@ public class PastFragment extends BaseFragment implements LoadDiaryListener,Stag
             datas.add(new StaggeredAdapter.DayCardWrapper(dayCard));
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public static final String UPDATE_NOTE_ACTION = "update_note_action";
+    public static final String UPDATE_NOTE_EXTRA = "update_note_extra";
+
+    private class UpdateNoteBroadcastReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().endsWith(UPDATE_NOTE_ACTION)){
+                DayCard updateDayCard = (DayCard)intent.getSerializableExtra(UPDATE_NOTE_EXTRA);
+                if(updateDayCard!=null){
+                    for(int i=0; i<datas.size(); i++){
+                        if(datas.get(i).getDayCard().getDay_id()==updateDayCard.getDay_id()){
+                            datas.set(i,new StaggeredAdapter.DayCardWrapper(updateDayCard));
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.swang.R;
+import cn.swang.app.GlobalData;
 import cn.swang.app.IConstants;
 import cn.swang.dao.DbService;
 import cn.swang.dao.LoadNoteListener;
@@ -65,6 +66,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
     private ImageView mSentBtn;
     private TextView mSentTv;
     private File cameraFile;
+    private DayCard mdayCard;
     private FloatingActionButton mFab1,mFab2,mFab3,mDeleteFab;
     private FrameLayout fabContainer;
     private AudioRecorderButton audioRecorderButton;
@@ -139,7 +141,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH)+1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        DayCard mdayCard = new DayCard(year,month,day);
+        mdayCard = new DayCard(year,month,day);
         dbService.loadDiary(mdayCard, this);
     }
 
@@ -298,7 +300,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
         NoteCard noteCard = new NoteCard();
         noteCard.setContent(content);
         noteCard.setDate(new Date());
-        dbService.saveNote(noteCard, ListFragment.this);
+        dbService.saveNoteWithCache(noteCard, ListFragment.this);
     }
 
     private void sendAudio(String audioPath,int audioLength){
@@ -306,7 +308,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
         noteCard.setVoicePath(audioPath);
         noteCard.setVoiceLength(audioLength);
         noteCard.setDate(new Date());
-        dbService.saveNote(noteCard,this);
+        dbService.saveNoteWithCache(noteCard, this);
     }
 
     /**
@@ -318,13 +320,14 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
         NoteCard noteCard = new NoteCard();
         noteCard.setImgPath(filePath);
         noteCard.setDate(new Date());
-        dbService.saveNote(noteCard, this);
+        dbService.saveNoteWithCache(noteCard, this);
     }
     @Override
     public void onDeleteSuccess(List<NoteCard> list) {
         datas.clear();
         noteCardList.clear();
         mDeleteFab.setVisibility(View.GONE);
+        sendUpdateNoteIntent(list);
         for(NoteCard noteCard:list){
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
@@ -334,6 +337,8 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
     @Override
     public void onSaveSuccess(List<NoteCard> list) {
         datas.clear();
+        mdayCard.setDayImagePath(GlobalData.dayCardImagePath);
+        sendUpdateNoteIntent(list);
         for(NoteCard noteCard:list){
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
@@ -346,10 +351,20 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
 
     }
 
+    private void sendUpdateNoteIntent(List<NoteCard> mList){
+        mdayCard.setNoteSet(mList);
+        Intent intent = new Intent();
+        intent.setAction(PastFragment.UPDATE_NOTE_ACTION);
+        intent.putExtra(PastFragment.UPDATE_NOTE_EXTRA, mdayCard);
+        getActivity().sendBroadcast(intent);
+    }
+
     @Override
     public void onLoadNoteSuccess(List<NoteCard> list) {
         if(list==null||list.size()==0) return;
         datas.clear();
+        mdayCard.setDay_id(GlobalData.dayCard_id);
+        sendUpdateNoteIntent(list);
         for(NoteCard noteCard:list){
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }

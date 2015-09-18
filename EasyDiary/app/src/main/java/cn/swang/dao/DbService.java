@@ -67,6 +67,7 @@ public class DbService {
         protected List<NoteCard> doInBackground(Void... params) {
             dayCard = dayCardDao.findByParams(dayCard.getYear(), dayCard.getMouth(), dayCard.getDay());
             if (dayCard == null) return null;
+            GlobalData.dayCard_id = dayCard.getDay_id();
             return noteCardDao.findAllByDayid(dayCard);
         }
 
@@ -135,6 +136,7 @@ public class DbService {
             dayCard.setDay_id(GlobalData.dayCard_id);
             if (!TextUtils.isEmpty(noteCard.getImgPath())) {
                 dayCard.setDayImagePath(noteCard.getImgPath());
+                GlobalData.dayCardImagePath=dayCard.getDayImagePath();
                 dayCardDao.update(dayCard);
             }
             return noteCardDao.findAllByDayid(dayCard);
