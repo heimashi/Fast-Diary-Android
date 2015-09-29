@@ -77,7 +77,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final NoteCardWrapper cardWrapper = datas.get(position);
         final NoteCard card=cardWrapper.getNoteCard();
         if(cardWrapper.isSelected()){
-            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_70_sr_color_primary));
+            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_50_sr_color_primary));
         }else {
             ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
         }

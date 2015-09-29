@@ -28,54 +28,58 @@ public class DbService {
         this.noteCardDao = new NoteCardDaoImpl(sqLiteOpenHelper);
     }
 
-    public void saveNoteWithCache(NoteCard noteCard, SaveNoteListener noteListener) {
-        //ThreadPoolManager.execute(new NoteAsyncTask(noteCard,noteListener),ThreadPoolManager.ASYNC_EXECUTOR_LEVEL_LOCAL_IO);
-        new SaveNoteWithCacheAsyncTask(noteCard, noteListener).execute();
+    public void saveNote(NoteCard noteCard) {
+        new SaveNoteAsyncTask(noteCard).execute();
+    }
+    public void updateNote(NoteCard noteCard){
+        new UpdateNoteAsyncTask(noteCard).execute();
     }
 
-    public void saveNote(NoteCard noteCard, SaveNoteListener noteListener) {
-        new SaveNoteAsyncTask(noteCard, noteListener).execute();
-    }
-
-    public void deleteNote(List<NoteCard> noteCardList, DeleteNoteListener deleteNoteListener) {
-        new DeleteNoteAsyncTask(noteCardList,deleteNoteListener).execute();
+    public void deleteNote(List<NoteCard> noteCardList,OnDeleteNoteListener onDeleteNoteListener) {
+        new DeleteNoteAsyncTask(noteCardList,onDeleteNoteListener).execute();
     }
 
     public void deleteDayCard(List<DayCard> dayCardList, DeleteDayCardListener deleteDayCardListener) {
         new DeleteDayCardAsyncTask(dayCardList,deleteDayCardListener).execute();
     }
 
-    public void loadDiary(DayCard dayCard, LoadNoteListener loadNoteListener) {
-        new LoadDiaryAsyncTask(dayCard, loadNoteListener).execute();
+    public void loadTodayNote(DayCard dayCard, LoadTodayNoteListener loadNoteListener) {
+        new LoadTodayDiaryAsyncTask(dayCard, loadNoteListener).execute();
     }
 
     public void loadAllDiary(LoadDiaryListener loadDiaryListener) {
         new LoadAllDiaryAsyncTask(loadDiaryListener).execute();
     }
 
-    class LoadDiaryAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
+    class LoadTodayDiaryAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
 
-        private LoadNoteListener loadNoteListener;
+        private LoadTodayNoteListener loadNoteListener;
         private DayCard dayCard;
+        private long day_id=-1;
 
-        public LoadDiaryAsyncTask(DayCard dayCard, LoadNoteListener loadNoteListener) {
+        public LoadTodayDiaryAsyncTask(DayCard dayCard, LoadTodayNoteListener loadNoteListener) {
             this.loadNoteListener = loadNoteListener;
             this.dayCard = dayCard;
         }
 
         @Override
         protected List<NoteCard> doInBackground(Void... params) {
-            dayCard = dayCardDao.findByParams(dayCard.getYear(), dayCard.getMouth(), dayCard.getDay());
-            if (dayCard == null) return null;
-            GlobalData.dayCard_id = dayCard.getDay_id();
+            if(dayCard.getDay_id()==-1){
+                dayCard = dayCardDao.findByParams(dayCard.getYear(), dayCard.getMouth(), dayCard.getDay());
+            }
+            if (dayCard == null||dayCard.getDay_id()==-1) return null;
+            day_id=dayCard.getDay_id();
             return noteCardDao.findAllByDayid(dayCard);
         }
 
         @Override
         protected void onPostExecute(List<NoteCard> noteCards) {
             super.onPostExecute(noteCards);
-            loadNoteListener.onLoadNoteSuccess(noteCards);
+            loadNoteListener.onLoadNoteSuccess(noteCards,day_id);
         }
+    }
+    public interface LoadTodayNoteListener {
+        void onLoadNoteSuccess(List<NoteCard> list, long day_id);
     }
 
     class LoadAllDiaryAsyncTask extends AsyncTask<Void, Void, List<DayCard>> {
@@ -99,57 +103,6 @@ public class DbService {
         protected void onPostExecute(List<DayCard> dayCards) {
             super.onPostExecute(dayCards);
             loadDiaryListener.onLoadDiarySuccess(dayCards);
-        }
-    }
-
-    class SaveNoteWithCacheAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
-        NoteCard noteCard;
-        SaveNoteListener noteListener;
-
-        public SaveNoteWithCacheAsyncTask(NoteCard noteCard, SaveNoteListener noteListener) {
-            this.noteCard = noteCard;
-            this.noteListener = noteListener;
-        }
-
-        @Override
-        protected List<NoteCard> doInBackground(Void... params) {
-            if (noteCard == null || noteListener == null) return null;
-            DayCard dayCard = null;
-            if (GlobalData.dayCard_id == -1) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(noteCard.getDate());
-                int year = calendar.get(Calendar.YEAR);
-                int mouth = calendar.get(Calendar.MONTH) + 1;
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                dayCard = dayCardDao.findByParams(year, mouth, day);
-                if (dayCard == null) {
-                    dayCard = new DayCard(year, mouth, day);
-                    dayCardDao.insert(dayCard);
-                }
-                GlobalData.dayCard_id = dayCard.getDay_id();
-            }
-            noteCard.setDay_id(GlobalData.dayCard_id);
-            noteCardDao.insert(noteCard);
-            if (dayCard == null) {
-                dayCard = new DayCard(GlobalData.yearNow, GlobalData.monthNow, GlobalData.dayNow);
-            }
-            dayCard.setDay_id(GlobalData.dayCard_id);
-            if (!TextUtils.isEmpty(noteCard.getImgPath())) {
-                dayCard.setDayImagePath(noteCard.getImgPath());
-                GlobalData.dayCardImagePath=dayCard.getDayImagePath();
-                dayCardDao.update(dayCard);
-            }
-            return noteCardDao.findAllByDayid(dayCard);
-        }
-
-        @Override
-        protected void onPostExecute(List<NoteCard> list) {
-            super.onPostExecute(list);
-            if (list == null || list.size() < 1) {
-                noteListener.onSaveFailed();
-            } else {
-                noteListener.onSaveSuccess(list);
-            }
         }
     }
 
@@ -191,89 +144,101 @@ public class DbService {
         }
     }
 
-    public interface DeleteNoteListener {
-        void onDeleteSuccess(List<NoteCard> list);
-
+    public interface OnDeleteNoteListener {
+        void onDeleteSuccess();
     }
 
-    class DeleteNoteAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
+    class DeleteNoteAsyncTask extends AsyncTask<Void, Void, Void> {
         List<NoteCard> noteCardList;
-        DeleteNoteListener noteListener;
+        OnDeleteNoteListener onDeleteNoteListener;
 
-        public DeleteNoteAsyncTask(List<NoteCard> noteCard, DeleteNoteListener noteListener) {
+        public DeleteNoteAsyncTask(List<NoteCard> noteCard,OnDeleteNoteListener onDeleteNoteListener) {
             this.noteCardList = noteCard;
-            this.noteListener = noteListener;
+            this.onDeleteNoteListener=onDeleteNoteListener;
         }
 
         @Override
-        protected List<NoteCard> doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             if (noteCardList == null||noteCardList.size()==0) return null;
-            DayCard dayCard = new DayCard();
-            dayCard.setDay_id(noteCardList.get(0).getDay_id());
+            DayCard dayCard = dayCardDao.findById(noteCardList.get(0).getDay_id());
             for(NoteCard noteCard: noteCardList){
+                if(!TextUtils.isEmpty(dayCard.getDayImagePath())&&dayCard.getDayImagePath()   .equals(noteCard.getImgPath())){
+                    dayCard.setDayImagePath("");
+                }
                 noteCardDao.delete(noteCard);
             }
             List<NoteCard> lists = noteCardDao.findAllByDayid(dayCard);
             if (lists == null || lists.size() == 0) {
                 dayCardDao.delete(dayCard.getDay_id());
+            }else {
+                for(NoteCard note:lists){
+                    if(!TextUtils.isEmpty(note.getImgPath())){
+                        dayCard.setDayImagePath(note.getImgPath());
+                        break;
+                    }
+                }
+                dayCardDao.update(dayCard);
             }
-            return lists;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(List<NoteCard> list) {
-            super.onPostExecute(list);
-            if (noteListener != null) {
-                noteListener.onDeleteSuccess(list);
+        protected void onPostExecute(Void v) {
+            super.onPostExecute(v);
+            if(onDeleteNoteListener!=null){
+                onDeleteNoteListener.onDeleteSuccess();
             }
         }
     }
 
-
-    class SaveNoteAsyncTask extends AsyncTask<Void, Void, List<NoteCard>> {
+    class UpdateNoteAsyncTask extends AsyncTask<Void,Void,Void>{
         NoteCard noteCard;
-        SaveNoteListener noteListener;
+        public UpdateNoteAsyncTask(NoteCard noteCard){
+            this.noteCard=noteCard;
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            noteCardDao.update(noteCard);
+            return null;
+        }
+    }
 
-        public SaveNoteAsyncTask(NoteCard noteCard, SaveNoteListener noteListener) {
+    class SaveNoteAsyncTask extends AsyncTask<Void, Void, Void> {
+        NoteCard noteCard;
+        public SaveNoteAsyncTask(NoteCard noteCard) {
             this.noteCard = noteCard;
-            this.noteListener = noteListener;
         }
 
         @Override
-        protected List<NoteCard> doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             if (noteCard == null) return null;
             DayCard dayCard = null;
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(noteCard.getDate());
-            int year = calendar.get(Calendar.YEAR);
-            int mouth = calendar.get(Calendar.MONTH) + 1;
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            dayCard = dayCardDao.findByParams(year, mouth, day);
-            if (dayCard == null) {
-                dayCard = new DayCard(year, mouth, day);
-                dayCardDao.insert(dayCard);
+            if(noteCard.getDay_id()==-1){
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(noteCard.getDate());
+                int year = calendar.get(Calendar.YEAR);
+                int mouth = calendar.get(Calendar.MONTH) + 1;
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                dayCard = dayCardDao.findByParams(year, mouth, day);
+                if (dayCard == null) {
+                    dayCard = new DayCard(year, mouth, day);
+                    long t = dayCardDao.insert(dayCard);
+                    dayCard.setDay_id(t);
+                }
+                noteCard.setDay_id(dayCard.getDay_id());
             }
-            noteCard.setDay_id(dayCard.getDay_id());
             noteCardDao.insert(noteCard);
             if (!TextUtils.isEmpty(noteCard.getImgPath())) {
+                if(dayCard==null){
+                    dayCard=dayCardDao.findById(noteCard.getDay_id());
+                }
                 dayCard.setDayImagePath(noteCard.getImgPath());
                 dayCardDao.update(dayCard);
             }
-            return noteCardDao.findAllByDayid(dayCard);
-        }
-
-        @Override
-        protected void onPostExecute(List<NoteCard> list) {
-            super.onPostExecute(list);
-            if (noteListener != null) {
-                if (list == null || list.size() < 1) {
-                    noteListener.onSaveFailed();
-                } else {
-                    noteListener.onSaveSuccess(list);
-                }
-            }
+            return null;
         }
     }
+
 }
 
 

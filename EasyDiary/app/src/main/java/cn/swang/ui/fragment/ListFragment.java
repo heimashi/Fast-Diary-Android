@@ -1,13 +1,14 @@
 package cn.swang.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -40,84 +42,92 @@ import cn.swang.R;
 import cn.swang.app.GlobalData;
 import cn.swang.app.IConstants;
 import cn.swang.dao.DbService;
-import cn.swang.dao.LoadNoteListener;
-import cn.swang.dao.SaveNoteListener;
+import cn.swang.dao.NoteCardDao;
 import cn.swang.entity.DayCard;
 import cn.swang.entity.NoteCard;
+import cn.swang.ui.activity.LongDiaryActivity;
 import cn.swang.ui.adapter.RecyclerViewAdapter;
 import cn.swang.ui.base.BaseFragment;
 import cn.swang.ui.view.AudioRecorderButton;
+import cn.swang.ui.view.MyDialog;
 import cn.swang.utils.CommonUtils;
 import cn.swang.utils.MediaManager;
+import cn.swang.utils.NoteDialogManager;
 
-public class ListFragment extends BaseFragment implements SaveNoteListener,DbService.DeleteNoteListener,LoadNoteListener,View.OnClickListener,RecyclerViewAdapter.OnItemLongClickListener{
+public class ListFragment extends BaseFragment implements NoteDialogManager.NoteDialogHandle,MyDialog.DialogDismissCallBack,DbService.LoadTodayNoteListener, View.OnClickListener, RecyclerViewAdapter.OnItemLongClickListener {
 
 
     private static final int REQUEST_CODE_PICK_IMAGE = 1000;
     private static final int REQUEST_CODE_CAMERA = 1111;
-
+    private static final int REQUEST_CODE_LONG_DIARY = 1222;
+    private static final int REQUEST_CODE_UPDATE_DIARY = 1333;
+    private long mDayId = -1;
     private LinearLayout mLinearLayout;
     private RecyclerView mRecyclerView;
     private TextInputLayout mInputView;
     private EditText mContentEt;
-    private List<RecyclerViewAdapter.NoteCardWrapper> datas=new ArrayList<RecyclerViewAdapter.NoteCardWrapper>();
+    private List<RecyclerViewAdapter.NoteCardWrapper> datas = new ArrayList<RecyclerViewAdapter.NoteCardWrapper>();
     private RecyclerViewAdapter adapter;
     private DbService dbService;
     private ImageView mSentBtn;
     private TextView mSentTv;
     private File cameraFile;
     private DayCard mdayCard;
-    private FloatingActionButton mFab1,mFab2,mFab3,mDeleteFab;
+    private FloatingActionButton mFab1, mFab2, mFab3;
+    private ImageView audioChoiceBtn;
     private FrameLayout fabContainer;
     private AudioRecorderButton audioRecorderButton;
     private boolean isFabViewShowing = false;
     private boolean isRecordeStateSelected = false;
-    private List<Integer> noteCardList=new ArrayList<Integer>();
+    //private List<Integer> noteCardList = new ArrayList<Integer>();
+    private ContentObserver contentObserver = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mLinearLayout =
                 (LinearLayout) inflater.inflate(R.layout.list_fragment, container, false);
-        mRecyclerView=(RecyclerView)mLinearLayout.findViewById(R.id.recycler_view);
-        mInputView=(TextInputLayout)mLinearLayout.findViewById(R.id.input_layout);
-        fabContainer = (FrameLayout)mLinearLayout.findViewById(R.id.other_btn_view);
-        mFab1=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_fab1);
-        mFab2=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_fab2);
-        mFab3=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_fab3);
-        mDeleteFab=(FloatingActionButton)mLinearLayout.findViewById(R.id.list_delete_fab);
-        audioRecorderButton=(AudioRecorderButton)mLinearLayout.findViewById(R.id.audio_recorder_bt);
+        mRecyclerView = (RecyclerView) mLinearLayout.findViewById(R.id.recycler_view);
+        mInputView = (TextInputLayout) mLinearLayout.findViewById(R.id.input_layout);
+        fabContainer = (FrameLayout) mLinearLayout.findViewById(R.id.other_btn_view);
+        mFab1 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab1);
+        mFab2 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab2);
+        mFab3 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab3);
+        audioRecorderButton = (AudioRecorderButton) mLinearLayout.findViewById(R.id.audio_recorder_bt);
         mInputView.setHint(getString(R.string.prompt_tint));
-        mContentEt=mInputView.getEditText();
-        mSentBtn=(ImageView)mLinearLayout.findViewById(R.id.send_bt);
-        mSentTv=(TextView)mLinearLayout.findViewById(R.id.send_bt_tv);
-        if(mInputView!=null&&mInputView.getEditText()!=null){
+        mContentEt = mInputView.getEditText();
+        audioChoiceBtn = (ImageView) mLinearLayout.findViewById(R.id.audio_btn_choice);
+        mSentBtn = (ImageView) mLinearLayout.findViewById(R.id.send_bt);
+        mSentTv = (TextView) mLinearLayout.findViewById(R.id.send_bt_tv);
+        if (mInputView != null && mInputView.getEditText() != null) {
             mInputView.getEditText().addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                 }
+
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (s.length() > 0) {
                         mSentBtn.setVisibility(View.GONE);
                         mSentTv.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         mSentBtn.setVisibility(View.VISIBLE);
                         mSentTv.setVisibility(View.GONE);
                     }
                 }
+
                 @Override
                 public void afterTextChanged(Editable s) {
 
                 }
             });
         }
+        audioChoiceBtn.setOnClickListener(this);
         mSentTv.setOnClickListener(this);
         mSentBtn.setOnClickListener(this);
         mFab1.setOnClickListener(this);
         mFab2.setOnClickListener(this);
         mFab3.setOnClickListener(this);
-        mDeleteFab.setOnClickListener(this);
         return mLinearLayout;
     }
 
@@ -125,7 +135,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        adapter=new RecyclerViewAdapter(getActivity(),datas);
+        adapter = new RecyclerViewAdapter(getActivity(), datas);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemLongClickListener(this);
         audioRecorderButton.setAudioFinishRecorderListener(new AudioRecorderButton.AudioFinishRecorderListener() {
@@ -135,76 +145,117 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
             }
         });
         fabContainer.setOnClickListener(this);
-        dbService=new DbService(getContext());
+        dbService = new DbService(getContext());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH)+1;
+        int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        mdayCard = new DayCard(year,month,day);
-        dbService.loadDiary(mdayCard, this);
+        mdayCard = new DayCard(year, month, day);
+        mdayCard.setDay_id(mDayId);
+        dbService.loadTodayNote(mdayCard, this);
+        contentObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange, uri);
+                if (uri.toString().equals(NoteCardDao.NOTE_CARD_URI_STRING + mDayId) || mDayId == -1) {
+                    DayCard tdayCard = new DayCard();
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTime(new Date());
+                    tdayCard.setYear(calendar1.get(Calendar.YEAR));
+                    tdayCard.setMouth(calendar1.get(Calendar.MONTH) + 1);
+                    tdayCard.setDay(calendar1.get(Calendar.DAY_OF_MONTH));
+                    tdayCard.setDay_id(mDayId);
+                    dbService.loadTodayNote(tdayCard, ListFragment.this);
+                }
+            }
+        };
+        getActivity().getContentResolver().registerContentObserver(NoteCardDao.NOTE_CARD_URI, true, contentObserver);
     }
 
-    private void setRecordeStateUnSelected(){
-        isRecordeStateSelected=false;
+    @Override
+    public void onStart() {
+        super.onStart();
+        sendMoveMotionEvent(mRecyclerView, GlobalData.screenWidth - 100, GlobalData.screenHeight - 200);
+    }
+
+    private void sendMoveMotionEvent(View view, float x, float y) {
+        //Instrumentation instrumentation = new Instrumentation();
+        try {
+            final MotionEvent downEvent = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_DOWN, x, y, 0);
+            view.dispatchTouchEvent(downEvent);
+            //view.onTouchEvent(downEvent);
+            downEvent.recycle();
+            y -= 150;
+            final MotionEvent moveEvent = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_MOVE, x, y, 0);
+            view.dispatchTouchEvent(moveEvent);
+            moveEvent.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setRecordeStateUnSelected() {
+        isRecordeStateSelected = false;
+        audioChoiceBtn.setImageResource(R.drawable.chat_img_bottom);
         mInputView.setVisibility(View.VISIBLE);
         audioRecorderButton.setVisibility(View.GONE);
     }
-    private void setRecordeStateSelected(){
-        isRecordeStateSelected=true;
+
+    private void setRecordeStateSelected() {
+        isRecordeStateSelected = true;
+        audioChoiceBtn.setImageResource(R.drawable.text_img_bottom);
         mInputView.setVisibility(View.GONE);
         audioRecorderButton.setVisibility(View.VISIBLE);
     }
-    private void setFabContainerComeIn(){
-        cancelDeleteNote();
-        Animation bt_animation=AnimationUtils.loadAnimation(getContext(),R.anim.bt_rotate);
+
+    private void setFabContainerComeIn() {
+        Animation bt_animation = AnimationUtils.loadAnimation(getContext(), R.anim.bt_rotate);
         mSentBtn.startAnimation(bt_animation);
-        isFabViewShowing=true;
-        Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.bottom_in);
+        isFabViewShowing = true;
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bottom_in);
         fabContainer.setVisibility(View.VISIBLE);
         fabContainer.startAnimation(animation);
     }
 
-    private void setFabContainerOut(){
-        cancelDeleteNote();
-        Animation bt_animation=AnimationUtils.loadAnimation(getContext(),R.anim.bt_rotate_back);
+    private void setFabContainerOut() {
+        Animation bt_animation = AnimationUtils.loadAnimation(getContext(), R.anim.bt_rotate_back);
         mSentBtn.startAnimation(bt_animation);
-        isFabViewShowing=false;
-        Animation animation = AnimationUtils.loadAnimation(getContext(),R.anim.bottom_out);
+        isFabViewShowing = false;
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.bottom_out);
         fabContainer.startAnimation(animation);
         fabContainer.setVisibility(View.GONE);
     }
 
-    private void cancelDeleteNote(){
-        if(mDeleteFab.getVisibility()==View.VISIBLE){
-            for(Integer i:noteCardList){
-                datas.get(i).setIsSelected(false);
-            }
-            noteCardList.clear();
-            mDeleteFab.setVisibility(View.GONE);
-            adapter.notifyDataSetChanged();
-        }
-    }
+
+
+    NoteDialogManager noteDialogManager=null;
 
     @Override
     public void onItemLongClick(View v, int position) {
-        if(datas.get(position).isSelected()){
-            noteCardList.remove((Object)position);
-            datas.get(position).setIsSelected(false);
-        }else {
-            noteCardList.add(position);
-            datas.get(position).setIsSelected(true);
-        }
-        if(noteCardList.size()==0){
-            mDeleteFab.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.right_out));
-            mDeleteFab.setVisibility(View.GONE);
-        }else {
-            if(mDeleteFab.getVisibility()!=View.VISIBLE){
-                mDeleteFab.setVisibility(View.VISIBLE);
-                mDeleteFab.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.right_in));
+        datas.get(position).setIsSelected(true);
+        noteDialogManager = new NoteDialogManager(getContext(),datas.get(position).getNoteCard());
+        noteDialogManager.showNoteLongClickDialog();
+        noteDialogManager.setDismissCallBack(this);
+        noteDialogManager.setNoteDialogHandle(this);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void handleDialogDismiss() {
+        for(RecyclerViewAdapter.NoteCardWrapper item:datas){
+            if(item.isSelected()){
+                item.setIsSelected(false);
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public void writeLongDiary() {
+        Intent intent= new Intent(getActivity(), LongDiaryActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_LONG_DIARY);
     }
 
     /**
@@ -232,7 +283,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
             return;
         }
 
-        cameraFile = new File(Environment.getExternalStorageDirectory()+ IConstants.TAKE_PHOTO_PATH + System.currentTimeMillis() + ".jpg");
+        cameraFile = new File(Environment.getExternalStorageDirectory() + IConstants.TAKE_PHOTO_PATH + System.currentTimeMillis() + ".jpg");
         cameraFile.getParentFile().mkdirs();
         startActivityForResult(
                 new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
@@ -240,19 +291,30 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == getActivity().RESULT_OK) {
-            if(requestCode==REQUEST_CODE_CAMERA){
+            if (requestCode == REQUEST_CODE_CAMERA) {
                 if (cameraFile != null && cameraFile.exists())
                     sendPicture(cameraFile.getAbsolutePath());
-            }else if(requestCode==REQUEST_CODE_PICK_IMAGE){
+            } else if (requestCode == REQUEST_CODE_PICK_IMAGE) {
                 if (data != null) {
                     Uri selectedImage = data.getData();
                     if (selectedImage != null) {
                         sendPicByUri(selectedImage);
+                    }
+                }
+            }else if(requestCode==REQUEST_CODE_LONG_DIARY){
+                if(data!=null){
+                    String content = data.getStringExtra(LongDiaryActivity.LONG_DIARY_EXTRA_STRING);
+                    sendTextNoteMsg(content);
+                }
+            }else if(requestCode==REQUEST_CODE_UPDATE_DIARY){
+                if(data!=null){
+                    NoteCard card = (NoteCard)data.getSerializableExtra(LongDiaryActivity.UPDATED_NEW_DIARY_EXTRA_STRING);
+                    if(card!=null){
+                        dbService.updateNote(card);
                     }
                 }
             }
@@ -265,7 +327,7 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
      * @param selectedImage
      */
     private void sendPicByUri(Uri selectedImage) {
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
         String st8 = getResources().getString(R.string.cannot_find_pictures);
         if (cursor != null) {
@@ -296,19 +358,21 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
 
     }
 
-    private void sendTextNoteMsg(String content){
+    private void sendTextNoteMsg(String content) {
         NoteCard noteCard = new NoteCard();
         noteCard.setContent(content);
         noteCard.setDate(new Date());
-        dbService.saveNoteWithCache(noteCard, ListFragment.this);
+        noteCard.setDay_id(mDayId);
+        dbService.saveNote(noteCard);
     }
 
-    private void sendAudio(String audioPath,int audioLength){
+    private void sendAudio(String audioPath, int audioLength) {
         NoteCard noteCard = new NoteCard();
+        noteCard.setDay_id(mDayId);
         noteCard.setVoicePath(audioPath);
         noteCard.setVoiceLength(audioLength);
         noteCard.setDate(new Date());
-        dbService.saveNoteWithCache(noteCard, this);
+        dbService.saveNote(noteCard);
     }
 
     /**
@@ -318,64 +382,26 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
      */
     private void sendPicture(final String filePath) {
         NoteCard noteCard = new NoteCard();
+        noteCard.setDay_id(mDayId);
         noteCard.setImgPath(filePath);
         noteCard.setDate(new Date());
-        dbService.saveNoteWithCache(noteCard, this);
-    }
-    @Override
-    public void onDeleteSuccess(List<NoteCard> list) {
-        datas.clear();
-        noteCardList.clear();
-        mDeleteFab.setVisibility(View.GONE);
-        sendUpdateNoteIntent(list);
-        for(NoteCard noteCard:list){
-            datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
-        }
-        adapter.notifyDataSetChanged();
+        dbService.saveNote(noteCard);
     }
 
+
+
     @Override
-    public void onSaveSuccess(List<NoteCard> list) {
+    public void onLoadNoteSuccess(List<NoteCard> list, long day_id) {
+        if (day_id != -1) mDayId = day_id;
+        if (list == null || list.size() == 0) return;
         datas.clear();
-        mdayCard.setDayImagePath(GlobalData.dayCardImagePath);
-        sendUpdateNoteIntent(list);
-        for(NoteCard noteCard:list){
+        for (NoteCard noteCard : list) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
         adapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(datas.size() - 1);
     }
 
-    @Override
-    public void onSaveFailed() {
-
-    }
-
-    private void sendUpdateNoteIntent(List<NoteCard> mList){
-        mdayCard.setNoteSet(mList);
-        Intent intent = new Intent();
-        intent.setAction(PastFragment.UPDATE_NOTE_ACTION);
-        intent.putExtra(PastFragment.UPDATE_NOTE_EXTRA, mdayCard);
-        getActivity().sendBroadcast(intent);
-    }
-
-    @Override
-    public void onLoadNoteSuccess(List<NoteCard> list) {
-        if(list==null||list.size()==0) return;
-        datas.clear();
-        mdayCard.setDay_id(GlobalData.dayCard_id);
-        sendUpdateNoteIntent(list);
-        for(NoteCard noteCard:list){
-            datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
-        }
-        adapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(datas.size() - 1);
-    }
-
-    @Override
-    public void onLoadNoteFailed() {
-
-    }
 
     @Override
     public void onPause() {
@@ -393,26 +419,28 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
     public void onDestroy() {
         super.onDestroy();
         MediaManager.getInstance().release();
+        if (contentObserver != null) {
+            getActivity().getContentResolver().unregisterContentObserver(contentObserver);
+        }
     }
-
 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.send_bt_tv:
                 String content = mContentEt.getText().toString().trim();
-                if(TextUtils.isEmpty(content)){
-                    Toast.makeText(getContext(),"Empty!",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(content)) {
+                    Toast.makeText(getContext(), "Empty!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 sendTextNoteMsg(content);
                 mContentEt.setText("");
                 break;
             case R.id.send_bt:
-                if(isFabViewShowing){
+                if (isFabViewShowing) {
                     setFabContainerOut();
-                }else {
+                } else {
                     setFabContainerComeIn();
                 }
                 break;
@@ -423,31 +451,39 @@ public class ListFragment extends BaseFragment implements SaveNoteListener,DbSer
                 selectPicFromLocal();
                 break;
             case R.id.list_fab3:
-                if(isRecordeStateSelected){
+                writeLongDiary();
+                break;
+            case R.id.audio_btn_choice:
+                if (isRecordeStateSelected) {
                     setRecordeStateUnSelected();
-                }else {
+                } else {
                     setRecordeStateSelected();
                 }
                 break;
-            case R.id.list_delete_fab:
-                List<NoteCard> mlist=new ArrayList<NoteCard>();
-                for (Integer i:noteCardList){
-                    mlist.add(datas.get(i).getNoteCard());
-                }
-                dbService.deleteNote(mlist,this);
-                break;
             case R.id.other_btn_view:
-                if(isFabViewShowing){
+                if (isFabViewShowing) {
                     setFabContainerOut();
                 }
                 break;
             default:
-                if(isFabViewShowing){
+                if (isFabViewShowing) {
                     setFabContainerOut();
                 }
                 break;
         }
     }
 
+    @Override
+    public void deleteNote(NoteCard noteCard) {
+        List<NoteCard> list=new ArrayList<NoteCard>();
+        list.add(noteCard);
+        dbService.deleteNote(list,null);
+    }
 
+    @Override
+    public void updateNote(NoteCard noteCard) {
+        Intent intent= new Intent(getActivity(), LongDiaryActivity.class);
+        intent.putExtra(LongDiaryActivity.UPDATE_DIARY_EXTRA_STRING,noteCard);
+        startActivityForResult(intent, REQUEST_CODE_UPDATE_DIARY);
+    }
 }

@@ -12,7 +12,7 @@ import android.widget.Button;
 import cn.swang.R;
 import cn.swang.app.IConstants;
 import cn.swang.utils.AudioManager;
-import cn.swang.utils.DialogManager;
+import cn.swang.utils.RecordDialogManager;
 
 /**
  * Created by sw on 2015/9/14.
@@ -27,7 +27,7 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
 
     private int mCurState = STATE_NORMAL;
     private boolean isRecording = false;
-    private DialogManager mDialogManager;
+    private RecordDialogManager mRecordDialogManager;
     private AudioManager mAudioManager;
     private float mTime=0f;
     //if or not touch longclick
@@ -39,7 +39,7 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
 
     public AudioRecorderButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDialogManager = new DialogManager(context);
+        mRecordDialogManager = new RecordDialogManager(context);
         String dir = Environment.getExternalStorageDirectory()+ IConstants.AUDIO_RECORD_PATH;
         mAudioManager = AudioManager.getInstanse(dir);
         mAudioManager.setOnAudioStateListener(this);
@@ -88,15 +88,15 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case MSG_AUDIO_PREPARED:
-                    mDialogManager.showRecordingDialog();
+                    mRecordDialogManager.showRecordingDialog();
                     isRecording = true;
                     new Thread(mGetVoiceLevelRunnable).start();
                     break;
                 case MSG_AUDIO_CHANGED:
-                    mDialogManager.updateVoiceLevel(mAudioManager.getVoiceLevel(7));
+                    mRecordDialogManager.updateVoiceLevel(mAudioManager.getVoiceLevel(7));
                     break;
                 case MSG_AUDIO_DIMISS:
-                    mDialogManager.dimissDialog();
+                    mRecordDialogManager.dimissDialog();
                     break;
             }
         }
@@ -131,18 +131,18 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
                     return super.onTouchEvent(event);
                 }
                 if(!isRecording||mTime<0.6f){
-                    mDialogManager.tooShort();
+                    mRecordDialogManager.tooShort();
                     mAudioManager.cancel();
                     mHandler.sendEmptyMessageDelayed(MSG_AUDIO_DIMISS, 1300);
                 }else if(mCurState==STATE_RECORDERING){//record success!
-                    mDialogManager.dimissDialog();
+                    mRecordDialogManager.dimissDialog();
                     mAudioManager.release();
                     //callback
                     if(audioFinishRecorderListener!=null){
                         audioFinishRecorderListener.onAudioFinish(mTime,mAudioManager.getCurrentFilePath());
                     }
                 }else if(mCurState==STATE_WANT_CANCEL){
-                    mDialogManager.dimissDialog();
+                    mRecordDialogManager.dimissDialog();
                     mAudioManager.cancel();
                 }
                 reset();
@@ -182,13 +182,13 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
                     setText(R.string.str_recorder_recording);
                     if(isRecording){
                         //
-                        mDialogManager.recording();
+                        mRecordDialogManager.recording();
                     }
                     break;
                 case STATE_WANT_CANCEL:
                     setBackgroundResource(R.drawable.btn_recorder_recordering);
                     setText(R.string.str_recorder_want_cancel);
-                    mDialogManager.wantToCancel();
+                    mRecordDialogManager.wantToCancel();
                     break;
             }
         }

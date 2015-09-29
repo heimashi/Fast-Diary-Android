@@ -83,7 +83,7 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
         holder.mTextView.setText(dayString);
         updateNoteView(holder, dayCard.getNoteSet());
         if(dayCardWrapper.isSelected()){
-            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_70_sr_color_primary));
+            ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.alpha_50_sr_color_primary));
         }else {
             ((CardView)holder.mView).setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
         }

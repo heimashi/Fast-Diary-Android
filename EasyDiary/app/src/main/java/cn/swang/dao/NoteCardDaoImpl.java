@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.swang.app.GlobalData;
 import cn.swang.entity.DayCard;
 import cn.swang.entity.NoteCard;
 
@@ -40,6 +42,7 @@ public class NoteCardDaoImpl implements  NoteCardDao{
             long rowId = database.insert(NoteCardDao.TABLE_NAME, null, values);
             noteCard.setId(rowId);
             database.setTransactionSuccessful();
+            GlobalData.app().getContentResolver().notifyChange(Uri.parse(NOTE_CARD_URI_STRING+noteCard.getDay_id()),null);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -63,6 +66,7 @@ public class NoteCardDaoImpl implements  NoteCardDao{
             String[] whereArgs = {String.valueOf(noteCard.getId())};
             database.update(NoteCardDao.TABLE_NAME, values, WHERE_ID_CLAUSE, whereArgs);
             database.setTransactionSuccessful();
+            GlobalData.app().getContentResolver().notifyChange(Uri.parse(NOTE_CARD_URI_STRING + noteCard.getDay_id()), null);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
@@ -79,6 +83,7 @@ public class NoteCardDaoImpl implements  NoteCardDao{
             String[] whereArgs = {String.valueOf(noteCard.getId())};
             database.delete(NoteCardDao.TABLE_NAME, WHERE_ID_CLAUSE, whereArgs);
             database.setTransactionSuccessful();
+            GlobalData.app().getContentResolver().notifyChange(Uri.parse(NOTE_CARD_URI_STRING + noteCard.getDay_id()), null);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

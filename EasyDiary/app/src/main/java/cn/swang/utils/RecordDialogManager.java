@@ -12,7 +12,7 @@ import cn.swang.R;
 /**
  * Created by sw on 2015/9/14.
  */
-public class DialogManager {
+public class RecordDialogManager {
 
     private Dialog mDialog;
 
@@ -21,7 +21,7 @@ public class DialogManager {
     private TextView mLabel;
     private Context mContext;
 
-    public DialogManager(Context context){
+    public RecordDialogManager(Context context){
         mContext=context;
     }
 
@@ -35,6 +35,8 @@ public class DialogManager {
         mLabel = (TextView)mDialog.findViewById(R.id.id_recorder_dialog_label);
         mDialog.show();
     }
+
+
 
     public void recording(){
         if(mDialog!=null&&mDialog.isShowing()){

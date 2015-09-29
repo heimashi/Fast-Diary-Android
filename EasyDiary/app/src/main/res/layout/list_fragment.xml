@@ -9,22 +9,13 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/list_delete_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:visibility="gone"
-            android:clickable="true"
-            app:borderWidth="0dp"
-            />
 
         <FrameLayout
             android:id="@+id/other_btn_view"
@@ -44,6 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
                     android:clickable="true"
+                    android:src="@drawable/fab_select_take_photo"
                     app:borderWidth="0dp"
                     app:fabSize="mini" />
 
@@ -53,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
                     android:clickable="true"
+                    android:src="@drawable/fab_select_from_album"
                     app:borderWidth="0dp"
                     app:fabSize="mini" />
 
@@ -62,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
                     android:clickable="true"
+                    android:src="@drawable/fab_edit_text"
                     app:borderWidth="0dp"
                     app:fabSize="mini" />
             </LinearLayout>
@@ -79,20 +73,24 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="2dp"
-        android:paddingTop="4dp">
+        android:paddingTop="2dp">
+
+        <ImageView
+            android:id="@+id/audio_btn_choice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/chat_img_bottom" />
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="2dp"
-            android:layout_weight="7">
+            android:layout_weight="8">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
                 android:hint="@string/prompt_tint"
                 android:textColorHint="@color/alpha_30_sr_color_primary"
@@ -102,9 +100,9 @@
                     android:id="@+id/input_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:inputType="textMultiLine"
-                    android:maxLines="5" />
+                    android:maxLines="5"
+                    android:textSize="16sp" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -112,10 +110,10 @@
                 android:id="@+id/audio_recorder_bt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="9dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="9dp"
                 android:background="@drawable/btn_recorder_normal"
                 android:gravity="center"
                 android:minHeight="0dp"
@@ -133,8 +131,8 @@
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:padding="1dp"
-            android:src="@drawable/btn_input_list_bg" />
-
+            android:src="@drawable/choice_button" />
+        <!--btn_input_list_bg-->
         <TextView
             android:id="@+id/send_bt_tv"
             android:layout_width="0dp"
@@ -144,23 +142,9 @@
             android:layout_weight="1"
             android:background="@drawable/button_bg_2"
             android:gravity="center"
-            android:padding="5dp"
             android:text="@string/send_msg"
-            android:textSize="16sp"
             android:textColor="@color/white"
+            android:textSize="13sp"
             android:visibility="gone" />
-
-        <!--<com.rey.material.widget.Button-->
-        <!--android:id="@+id/send_bt"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="@dimen/bt_height"-->
-        <!--android:layout_marginRight="5dp"-->
-        <!--android:layout_marginTop="2dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@drawable/button_bg_2"-->
-        <!--android:text="@string/send_msg"-->
-        <!--android:textColor="@color/white"-->
-        <!--app:rd_enable="true" />-->
-
     </LinearLayout>
 </LinearLayout>

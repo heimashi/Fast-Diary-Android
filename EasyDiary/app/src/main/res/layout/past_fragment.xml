@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/today_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/alpha_5_sr_color_primary">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

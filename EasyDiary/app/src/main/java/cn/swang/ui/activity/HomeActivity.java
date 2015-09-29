@@ -130,6 +130,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
+        //navigationView.
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override

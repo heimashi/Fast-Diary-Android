@@ -7,6 +7,7 @@
     <color name="sr_window_background">#FFFEFEFE</color>
     <color name="alpha_5_sr_color_primary">#0D69A252</color>
     <color name="alpha_10_sr_color_primary">#1A69A252</color>
+    <color name="alpha_20_sr_color_primary">#3369A252</color>
     <color name="alpha_30_sr_color_primary">#4D69A252</color>
     <color name="alpha_50_sr_color_primary">#8069A252</color>
     <color name="alpha_70_sr_color_primary">#B369A252</color>

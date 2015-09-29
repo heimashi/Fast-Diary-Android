@@ -40,7 +40,7 @@
             android:label="@string/sign_in"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoneTranslucent"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".ui.activity.RegisterActivity"
@@ -48,7 +48,15 @@
             android:label="@string/action_register"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoneTranslucent"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity
+            android:name=".ui.activity.LongDiaryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/write_long_diary"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoneTranslucent"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".ui.activity.ImageDetailActivity"

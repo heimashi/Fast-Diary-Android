@@ -67,7 +67,7 @@ public class SplashPresenter implements BasePresenter {
                 Date date1 = new Date(date.getTime() + 1 * 24 * 60 * 60 * 1000);
                 noteCard.setDate(date1);
                 noteCard.setContent(i+"中午发士大夫电风扇分厘卡似的咖啡碱多少了");
-                dbService.saveNote(noteCard,null);
+                //dbService.saveNote(noteCard);
             }
             for(int i=0; i<4; i++){
                 NoteCard noteCard = new NoteCard();
@@ -75,7 +75,7 @@ public class SplashPresenter implements BasePresenter {
                 Date date1 = new Date(date.getTime() -6 * 24 * 60 * 60 * 1000);
                 noteCard.setDate(date1);
                 noteCard.setContent(i + "zhesdfsfsdfsfkflsdlsff sdfjsdlffsljf");
-                dbService.saveNote(noteCard,null);
+                //dbService.saveNote(noteCard);
             }
             for(int i=0; i<1; i++){
                 NoteCard noteCard = new NoteCard();
@@ -83,7 +83,7 @@ public class SplashPresenter implements BasePresenter {
                 Date date1 = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
                 noteCard.setDate(date1);
                 noteCard.setContent(i+"zhesdfsfsdfsfkflsdlsff sdfjsdlffsljf");
-                dbService.saveNote(noteCard,null);
+                //dbService.saveNote(noteCard);
             }
             for(int i=0; i<3; i++){
                 NoteCard noteCard = new NoteCard();
@@ -91,7 +91,7 @@ public class SplashPresenter implements BasePresenter {
                 Date date1 = new Date(date.getTime() - 8 * 24 * 60 * 60 * 1000);
                 noteCard.setDate(date1);
                 noteCard.setContent(i+"zhesdfsfsdfsfkflsdlsff sdfjsdlffsljf");
-                dbService.saveNote(noteCard,null);
+                //dbService.saveNote(noteCard);
             }
         }
     }

@@ -59,4 +59,9 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="dialogWindowAnim" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/right_in</item>
+        <item name="android:windowExitAnimation">@anim/right_out</item>
+    </style>
+
 </resources>

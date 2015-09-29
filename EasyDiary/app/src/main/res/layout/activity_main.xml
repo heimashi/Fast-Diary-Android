@@ -1,29 +1,27 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/dl_main_drawer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
 
-        <include layout="@layout/navigation_content"/>
+        <include layout="@layout/navigation_content" />
+
 
         <android.support.design.widget.NavigationView
             android:id="@+id/nv_main_navigation"
-            android:layout_width="220dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/navigation_header"
             app:menu="@menu/drawer_view" />
 
     </android.support.v4.widget.DrawerLayout>
-
 </LinearLayout>

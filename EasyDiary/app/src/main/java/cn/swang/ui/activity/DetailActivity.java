@@ -1,42 +1,41 @@
 package cn.swang.ui.activity;
 
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.swang.R;
 import cn.swang.dao.DbService;
+import cn.swang.dao.NoteCardDao;
 import cn.swang.entity.DayCard;
 import cn.swang.entity.NoteCard;
-import cn.swang.ui.adapter.DetailRecyclerViewAdapter;
 import cn.swang.ui.adapter.RecyclerViewAdapter;
 import cn.swang.ui.adapter.StaggeredAdapter;
 import cn.swang.ui.base.BaseActivity;
-import cn.swang.ui.fragment.PastFragment;
-import cn.swang.utils.AudioManager;
-import cn.swang.utils.ImageLoaderHelper;
+import cn.swang.utils.ShareBitmapUtils;
 import cn.swang.utils.MediaManager;
 
-public class DetailActivity extends BaseActivity implements RecyclerViewAdapter.OnItemLongClickListener,View.OnClickListener,DbService.DeleteNoteListener{
+public class DetailActivity extends BaseActivity implements ShareBitmapUtils.ConvertDayCardListener,DbService.LoadTodayNoteListener, DbService.OnDeleteNoteListener,RecyclerViewAdapter.OnItemLongClickListener,View.OnClickListener{
 
     private RecyclerView mRecyclerView;
     private ImageView mDayCardImageView;
@@ -46,6 +45,8 @@ public class DetailActivity extends BaseActivity implements RecyclerViewAdapter.
     private List<Integer> noteCardList=new ArrayList<Integer>();
     List<RecyclerViewAdapter.NoteCardWrapper> datas=new ArrayList<RecyclerViewAdapter.NoteCardWrapper>();
     private DayCard dayCard;
+    private ContentObserver contentObserver = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,15 @@ public class DetailActivity extends BaseActivity implements RecyclerViewAdapter.
         adapter.setOnItemLongClickListener(this);
         mDeleteFab.setOnClickListener(this);
         mUpdateFab.setOnClickListener(this);
+        contentObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                super.onChange(selfChange, uri);
+                if(uri.toString().equals(NoteCardDao.NOTE_CARD_URI_STRING+dayCard.getDay_id())){
+                    dbService.loadTodayNote(dayCard,DetailActivity.this);
+                }
+            }
+        };
     }
 
     @Override
@@ -130,6 +140,7 @@ public class DetailActivity extends BaseActivity implements RecyclerViewAdapter.
         adapter.notifyDataSetChanged();
     }
 
+    boolean isGeneratingBitmap = false;
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -141,30 +152,55 @@ public class DetailActivity extends BaseActivity implements RecyclerViewAdapter.
                 dbService.deleteNote(mlist,this);
                 break;
             case R.id.detail_update_fab:
-                adapter.notifyDataSetChanged();
-                Snackbar.make(v, "update success!", Snackbar.LENGTH_SHORT).show();
+                if(!isGeneratingBitmap){
+                    isGeneratingBitmap=true;
+                    Snackbar.make(v, getString(R.string.detail_activity_generate_bitmap), Snackbar.LENGTH_SHORT).show();
+                    ShareBitmapUtils bitmapUtils=new ShareBitmapUtils();
+                    bitmapUtils.convertDayCardBitmap(this,dayCard);
+                }
                 break;
         }
     }
 
     @Override
-    public void onDeleteSuccess(List<NoteCard> list) {
-        datas.clear();
+    public void onDeleteSuccess() {
         noteCardList.clear();
         mDeleteFab.setVisibility(View.GONE);
-        sendUpdateNoteIntent(list);
+    }
+
+    @Override
+    public void onLoadNoteSuccess(List<NoteCard> list, long day_id) {
+        if(list==null||list.size()==0){
+            finish();
+            return;
+        }
+        datas.clear();
         for(NoteCard noteCard:list){
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
         adapter.notifyDataSetChanged();
-
+        //mRecyclerView.scrollToPosition(datas.size() - 1);
     }
 
-    private void sendUpdateNoteIntent(List<NoteCard> mList){
-        dayCard.setNoteSet(mList);
-        Intent intent = new Intent();
-        intent.setAction(PastFragment.UPDATE_NOTE_ACTION);
-        intent.putExtra(PastFragment.UPDATE_NOTE_EXTRA, dayCard);
-        sendBroadcast(intent);
+    @Override
+    public void onConvertSuccess(String imgPath) {
+        isGeneratingBitmap=false;
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        File f = new File(imgPath);
+        if (f != null && f.exists() && f.isFile()) {
+            intent.setType("image/jpg");
+            Uri u = Uri.fromFile(f);
+            intent.putExtra(Intent.EXTRA_STREAM, u);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(Intent.createChooser(intent, "请选择"));
+        }
     }
+
+//    private void sendUpdateNoteIntent(List<NoteCard> mList){
+//        dayCard.setNoteSet(mList);
+//        Intent intent = new Intent();
+//        intent.setAction(PastFragment.UPDATE_NOTE_ACTION);
+//        intent.putExtra(PastFragment.UPDATE_NOTE_EXTRA, dayCard);
+//        sendBroadcast(intent);
+//    }
 }

@@ -30,4 +30,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         return mTitles.get(position);
     }
+
+    @Override
+    public float getPageWidth(int position) {
+        return super.getPageWidth(position);
+    }
 }
