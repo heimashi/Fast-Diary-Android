@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.rey.material.app.ThemeManager;
 
+import java.util.Calendar;
 import java.util.List;
 
 import cn.swang.R;
+import cn.swang.entity.DayCard;
 import cn.swang.entity.NoteCard;
 import cn.swang.ui.activity.DetailActivity;
 
@@ -46,7 +48,15 @@ public class SearchRecylerViewAdapter extends RecyclerView.Adapter<SearchRecyler
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DetailActivity.class);
-                //intent.putExtra(INTENT_DAYCARD_EXTRAS, datas.get(holder.getAdapterPosition()).getDayCard());
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(card.getDate());
+//                int year = calendar.get(Calendar.YEAR);
+//                int mouth = calendar.get(Calendar.MONTH)+1;
+//                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                DayCard dayCard = new DayCard();
+                dayCard.setDay_id(card.getDay_id());
+                intent.putExtra(StaggeredAdapter.INTENT_DAYCARD_EXTRAS, dayCard);
+                intent.putExtra(DetailActivity.START_ACTIVITY_DAY_CARD_NEED_UPDATE,true);
                 mContext.startActivity(intent);
             }
         });

@@ -33,4 +33,5 @@ public interface NoteCardDao {
     List<NoteCard> searchNoteCard(String input);
 
     List<NoteCard> findAllByDayid(DayCard dayCard);
+
 }

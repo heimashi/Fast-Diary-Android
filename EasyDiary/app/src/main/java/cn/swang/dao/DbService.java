@@ -35,6 +35,10 @@ public class DbService {
         new UpdateNoteAsyncTask(noteCard).execute();
     }
 
+    public void loadDayCardByDayId(long dayId,LoadDayCardListener loadDayCardListener){
+        new LoadDayCardByIDAsyncTask(dayId,loadDayCardListener).execute();
+    }
+
     public void searchNote(String input,OnSearchNoteListener onSearchNoteListener){
         new SearchNoteAsyncTask(input,onSearchNoteListener).execute();
     }
@@ -84,6 +88,34 @@ public class DbService {
     }
     public interface LoadTodayNoteListener {
         void onLoadNoteSuccess(List<NoteCard> list, long day_id);
+    }
+
+    public interface LoadDayCardListener {
+        void onLoadDayCardSuccess(DayCard dayCard);
+    }
+
+    class LoadDayCardByIDAsyncTask extends AsyncTask<Void, Void, DayCard> {
+
+        private LoadDayCardListener loadDayCardListener;
+        private long day_id;
+
+        public LoadDayCardByIDAsyncTask(long id,LoadDayCardListener loadDayCardListener) {
+            this.loadDayCardListener = loadDayCardListener;
+            this.day_id=id;
+        }
+
+        @Override
+        protected DayCard doInBackground(Void... params) {
+            DayCard dayCard = dayCardDao.findById(day_id);
+            dayCard.setNoteSet(noteCardDao.findAllByDayid(dayCard));
+            return dayCard;
+        }
+
+        @Override
+        protected void onPostExecute(DayCard dayCard) {
+            super.onPostExecute(dayCard);
+            loadDayCardListener.onLoadDayCardSuccess(dayCard);
+        }
     }
 
     class LoadAllDiaryAsyncTask extends AsyncTask<Void, Void, List<DayCard>> {

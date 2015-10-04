@@ -37,7 +37,7 @@ import cn.swang.utils.NoteDialogManager;
 import cn.swang.utils.ShareBitmapUtils;
 import cn.swang.utils.MediaManager;
 
-public class DetailActivity extends BaseActivity implements NoteDialogManager.NoteDialogHandle,MyDialog.DialogDismissCallBack, ShareBitmapUtils.ConvertDayCardListener, DbService.LoadTodayNoteListener, RecyclerViewAdapter.OnItemLongClickListener, View.OnClickListener {
+public class DetailActivity extends BaseActivity implements DbService.LoadDayCardListener, NoteDialogManager.NoteDialogHandle,MyDialog.DialogDismissCallBack, ShareBitmapUtils.ConvertDayCardListener, DbService.LoadTodayNoteListener, RecyclerViewAdapter.OnItemLongClickListener, View.OnClickListener {
 
 
     private RecyclerView mRecyclerView;
@@ -49,6 +49,9 @@ public class DetailActivity extends BaseActivity implements NoteDialogManager.No
     List<RecyclerViewAdapter.NoteCardWrapper> datas = new ArrayList<RecyclerViewAdapter.NoteCardWrapper>();
     private DayCard dayCard;
     private ContentObserver contentObserver = null;
+    public static final String START_ACTIVITY_DAY_CARD_NEED_UPDATE = "start_need_update_day_card";
+    private boolean isStartNeedUpdate = false;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,23 +63,20 @@ public class DetailActivity extends BaseActivity implements NoteDialogManager.No
             finish();
             return;
         }
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        String SHOW_TIME = dayCard.getYear() + "/" + dayCard.getMouth() + "/" + dayCard.getDay();
-        collapsingToolbar.setTitle(SHOW_TIME);
+        isStartNeedUpdate = getIntent().getBooleanExtra(START_ACTIVITY_DAY_CARD_NEED_UPDATE,false);
+
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         dbService = new DbService(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.detail_recycler_view);
         mShareDayCardFab = (FloatingActionButton) findViewById(R.id.detail_share_daycard_fab);
         mDayCardImageView = (ImageView) findViewById(R.id.detail_daycard_iv);
-        if (!TextUtils.isEmpty(dayCard.getDayImagePath())) {
-            String imageUri = ImageDownloader.Scheme.FILE.wrap(dayCard.getDayImagePath());
-            ImageLoader.getInstance().displayImage(imageUri, mDayCardImageView);
-        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        datas.clear();
-        for (NoteCard note : dayCard.getNoteSet()) {
-            datas.add(new RecyclerViewAdapter.NoteCardWrapper(note));
+        if(isStartNeedUpdate){
+            dbService.loadDayCardByDayId(dayCard.getDay_id(),this);
+        }else {
+            init();
         }
+
         adapter = new RecyclerViewAdapter(DetailActivity.this, datas);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemLongClickListener(this);
@@ -90,6 +90,23 @@ public class DetailActivity extends BaseActivity implements NoteDialogManager.No
                 }
             }
         };
+        getContentResolver().registerContentObserver(NoteCardDao.NOTE_CARD_URI, true, contentObserver);
+
+    }
+
+    private void init(){
+        String SHOW_TIME = dayCard.getYear() + "/" + dayCard.getMouth() + "/" + dayCard.getDay();
+        collapsingToolbar.setTitle(SHOW_TIME);
+        if (!TextUtils.isEmpty(dayCard.getDayImagePath())) {
+            String imageUri = ImageDownloader.Scheme.FILE.wrap(dayCard.getDayImagePath());
+            ImageLoader.getInstance().displayImage(imageUri, mDayCardImageView);
+        }else {
+            mDayCardImageView.setBackgroundResource(R.drawable.afternoon);
+        }
+        datas.clear();
+        for (NoteCard note : dayCard.getNoteSet()) {
+            datas.add(new RecyclerViewAdapter.NoteCardWrapper(note));
+        }
     }
 
     @Override
@@ -108,6 +125,9 @@ public class DetailActivity extends BaseActivity implements NoteDialogManager.No
     protected void onDestroy() {
         super.onDestroy();
         MediaManager.getInstance().release();
+        if (contentObserver != null) {
+            getContentResolver().unregisterContentObserver(contentObserver);
+        }
     }
     @Override
     public void finish() {
@@ -232,5 +252,13 @@ public class DetailActivity extends BaseActivity implements NoteDialogManager.No
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoadDayCardSuccess(DayCard dayCard) {
+        this.dayCard=dayCard;
+        init();
+        adapter.notifyDataSetChanged();
+        isStartNeedUpdate=false;
     }
 }
