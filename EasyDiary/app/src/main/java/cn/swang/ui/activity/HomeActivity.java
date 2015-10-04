@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class HomeActivity extends BaseActivity {
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle = null;
+    private TextView header_tv2,header_tv3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,16 @@ public class HomeActivity extends BaseActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main_drawer);
         NavigationView navigationView =
                 (NavigationView) findViewById(R.id.nv_main_navigation);
+        header_tv3 = (TextView)navigationView.findViewById(R.id.header_tv3);
+        header_tv2 = (TextView)navigationView.findViewById(R.id.header_tv2);
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(new Date());
+        int mouth = calendar.get(Calendar.MONTH)+1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int week = calendar.get(Calendar.DAY_OF_WEEK)-1;
+        String title= mouth+"月"+day+"日";
+        header_tv2.setText(title);
+        header_tv3.setText(CommonUtils.getWeekString(week));
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
@@ -84,12 +97,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        String title= GlobalData.monthNow+"月"+GlobalData.dayNow+"日  ";
-        //menu.add(Menu.NONE,Menu.NONE,1, title);
         getMenuInflater().inflate(R.menu.menu_main,menu);
-        MenuItem item=menu.getItem(0);
-        item.setTitle(title);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -104,6 +112,7 @@ public class HomeActivity extends BaseActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.id_action_title_show_day:
+                startActivityByMyself(SearchActivity.class,false);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -206,7 +215,8 @@ public class HomeActivity extends BaseActivity {
             // 获得当前得到焦点的View
             View v = getCurrentFocus();
             if (isShouldHideInput(v, ev)) {
-                hideSoftInput(v.getWindowToken());
+                //hideSoftInput(v.getWindowToken());
+                CommonUtils.hideKeyboard(v);
             }
         }
         return super.dispatchTouchEvent(ev);
@@ -228,19 +238,6 @@ public class HomeActivity extends BaseActivity {
         }
         // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
         return false;
-    }
-
-    /**
-     * 多种隐藏软件盘方法的其中一种
-     *
-     * @param token
-     */
-    public void hideSoftInput(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(token,
-                    InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
 }

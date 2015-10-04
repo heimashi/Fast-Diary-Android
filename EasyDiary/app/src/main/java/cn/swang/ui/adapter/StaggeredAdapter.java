@@ -90,18 +90,19 @@ public class StaggeredAdapter extends RecyclerView.Adapter<StaggeredAdapter.View
         if(!TextUtils.isEmpty(dayCard.getDayImagePath())){
             holder.mImageItem.setVisibility(View.VISIBLE);
             String imageUrl = ImageDownloader.Scheme.FILE.wrap(dayCard.getDayImagePath());
-//            ImageLoader.getInstance().displayImage(imageUrl,holder.mImageItem, ImageLoaderHelper.getInstance(mContext).getDisplayOptions(8));
+            ImageLoader.getInstance().displayImage(imageUrl,holder.mImageItem, ImageLoaderHelper.getInstance(mContext).getDisplayOptions(4));
 //            holder.mImageItem.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            ImageLoader.getInstance().loadImage(imageUrl, ImageLoaderHelper.getInstance(mContext).getDisplayOptions(),new SimpleImageLoadingListener(){
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if(loadedImage!=null){
-                        //Bitmap croppedBitmap = ThumbnailUtils.extractThumbnail(loadedImage, DisplayUtils.dip2px(295), DisplayUtils.dip2px(211));
-                        //Bitmap roundedCropped = DisplayUtils.getRoundedCornerBitmap(loadedImage, 50);
-                        holder.mImageItem.setImageBitmap(loadedImage);
-                    }
-                }
-            });
+            //holder.mImageItem.setImageResource(R.drawable.image_loading);
+//            ImageLoader.getInstance().loadImage(imageUrl, ImageLoaderHelper.getInstance(mContext).getDisplayOptions(),new SimpleImageLoadingListener(){
+//                @Override
+//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                    if(loadedImage!=null){
+//                        //Bitmap croppedBitmap = ThumbnailUtils.extractThumbnail(loadedImage, DisplayUtils.dip2px(295), DisplayUtils.dip2px(211));
+//                        //Bitmap roundedCropped = DisplayUtils.getRoundedCornerBitmap(loadedImage, 50);
+//                        holder.mImageItem.setImageBitmap(loadedImage);
+//                    }
+//                }
+//            });
         }else {
             holder.mImageItem.setVisibility(View.GONE);
         }

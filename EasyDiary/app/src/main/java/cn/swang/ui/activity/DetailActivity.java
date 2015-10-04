@@ -32,59 +32,61 @@ import cn.swang.entity.NoteCard;
 import cn.swang.ui.adapter.RecyclerViewAdapter;
 import cn.swang.ui.adapter.StaggeredAdapter;
 import cn.swang.ui.base.BaseActivity;
+import cn.swang.ui.view.MyDialog;
+import cn.swang.utils.NoteDialogManager;
 import cn.swang.utils.ShareBitmapUtils;
 import cn.swang.utils.MediaManager;
 
-public class DetailActivity extends BaseActivity implements ShareBitmapUtils.ConvertDayCardListener,DbService.LoadTodayNoteListener, DbService.OnDeleteNoteListener,RecyclerViewAdapter.OnItemLongClickListener,View.OnClickListener{
+public class DetailActivity extends BaseActivity implements NoteDialogManager.NoteDialogHandle,MyDialog.DialogDismissCallBack, ShareBitmapUtils.ConvertDayCardListener, DbService.LoadTodayNoteListener, RecyclerViewAdapter.OnItemLongClickListener, View.OnClickListener {
+
 
     private RecyclerView mRecyclerView;
     private ImageView mDayCardImageView;
-    private FloatingActionButton mDeleteFab,mUpdateFab;
+    private FloatingActionButton mShareDayCardFab;
     private RecyclerViewAdapter adapter;
     private DbService dbService;
-    private List<Integer> noteCardList=new ArrayList<Integer>();
-    List<RecyclerViewAdapter.NoteCardWrapper> datas=new ArrayList<RecyclerViewAdapter.NoteCardWrapper>();
+    private List<Integer> noteCardList = new ArrayList<Integer>();
+    List<RecyclerViewAdapter.NoteCardWrapper> datas = new ArrayList<RecyclerViewAdapter.NoteCardWrapper>();
     private DayCard dayCard;
     private ContentObserver contentObserver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.scale_in2, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         dayCard = (DayCard) getIntent().getSerializableExtra(StaggeredAdapter.INTENT_DAYCARD_EXTRAS);
-        if(dayCard==null) {
+        if (dayCard == null) {
             finish();
             return;
         }
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        String SHOW_TIME = dayCard.getYear()+"/"+dayCard.getMouth()+"/"+dayCard.getDay();
+        String SHOW_TIME = dayCard.getYear() + "/" + dayCard.getMouth() + "/" + dayCard.getDay();
         collapsingToolbar.setTitle(SHOW_TIME);
-        dbService=new DbService(this);
-        mRecyclerView = (RecyclerView)findViewById(R.id.detail_recycler_view);
-        mDeleteFab = (FloatingActionButton)findViewById(R.id.detail_delete_fab);
-        mUpdateFab = (FloatingActionButton)findViewById(R.id.detail_update_fab);
-        mDayCardImageView = (ImageView)findViewById(R.id.detail_daycard_iv);
-        if(!TextUtils.isEmpty(dayCard.getDayImagePath())){
+        dbService = new DbService(this);
+        mRecyclerView = (RecyclerView) findViewById(R.id.detail_recycler_view);
+        mShareDayCardFab = (FloatingActionButton) findViewById(R.id.detail_share_daycard_fab);
+        mDayCardImageView = (ImageView) findViewById(R.id.detail_daycard_iv);
+        if (!TextUtils.isEmpty(dayCard.getDayImagePath())) {
             String imageUri = ImageDownloader.Scheme.FILE.wrap(dayCard.getDayImagePath());
-            ImageLoader.getInstance().displayImage(imageUri,mDayCardImageView);
+            ImageLoader.getInstance().displayImage(imageUri, mDayCardImageView);
         }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         datas.clear();
-        for(NoteCard note:dayCard.getNoteSet()){
+        for (NoteCard note : dayCard.getNoteSet()) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(note));
         }
-        adapter=new RecyclerViewAdapter(DetailActivity.this,datas);
+        adapter = new RecyclerViewAdapter(DetailActivity.this, datas);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemLongClickListener(this);
-        mDeleteFab.setOnClickListener(this);
-        mUpdateFab.setOnClickListener(this);
+        mShareDayCardFab.setOnClickListener(this);
         contentObserver = new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange, Uri uri) {
                 super.onChange(selfChange, uri);
-                if(uri.toString().equals(NoteCardDao.NOTE_CARD_URI_STRING+dayCard.getDay_id())){
-                    dbService.loadTodayNote(dayCard,DetailActivity.this);
+                if (uri.toString().equals(NoteCardDao.NOTE_CARD_URI_STRING + dayCard.getDay_id())) {
+                    dbService.loadTodayNote(dayCard, DetailActivity.this);
                 }
             }
         };
@@ -107,7 +109,16 @@ public class DetailActivity extends BaseActivity implements ShareBitmapUtils.Con
         super.onDestroy();
         MediaManager.getInstance().release();
     }
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.scale_out);
+    }
 
+    @Override
+    protected boolean useActivityAnimation() {
+        return false;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -119,63 +130,45 @@ public class DetailActivity extends BaseActivity implements ShareBitmapUtils.Con
         return super.onOptionsItemSelected(item);
     }
 
+
+    NoteDialogManager noteDialogManager = null;
+
     @Override
     public void onItemLongClick(View v, int position) {
-        if(datas.get(position).isSelected()){
-            noteCardList.remove((Object)position);
-            datas.get(position).setIsSelected(false);
-        }else {
-            noteCardList.add(position);
-            datas.get(position).setIsSelected(true);
-        }
-        if(noteCardList.size()==0){
-            mDeleteFab.startAnimation(AnimationUtils.loadAnimation(this, R.anim.right_out));
-            mDeleteFab.setVisibility(View.GONE);
-        }else {
-            if(mDeleteFab.getVisibility()!=View.VISIBLE){
-                mDeleteFab.setVisibility(View.VISIBLE);
-                mDeleteFab.startAnimation(AnimationUtils.loadAnimation(this,R.anim.right_in));
-            }
-        }
+        datas.get(position).setIsSelected(true);
+        noteDialogManager = new NoteDialogManager(this, datas.get(position).getNoteCard());
+        noteDialogManager.showNoteLongClickDialog();
+        noteDialogManager.setDismissCallBack(this);
+        noteDialogManager.setNoteDialogHandle(this);
         adapter.notifyDataSetChanged();
     }
 
     boolean isGeneratingBitmap = false;
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.detail_delete_fab:
-                List<NoteCard> mlist=new ArrayList<NoteCard>();
-                for (Integer i:noteCardList){
-                    mlist.add(datas.get(i).getNoteCard());
-                }
-                dbService.deleteNote(mlist,this);
-                break;
-            case R.id.detail_update_fab:
-                if(!isGeneratingBitmap){
-                    isGeneratingBitmap=true;
+        switch (v.getId()) {
+            case R.id.detail_share_daycard_fab:
+                if (!isGeneratingBitmap) {
+                    isGeneratingBitmap = true;
                     Snackbar.make(v, getString(R.string.detail_activity_generate_bitmap), Snackbar.LENGTH_SHORT).show();
-                    ShareBitmapUtils bitmapUtils=new ShareBitmapUtils();
-                    bitmapUtils.convertDayCardBitmap(this,dayCard);
+                    ShareBitmapUtils bitmapUtils = new ShareBitmapUtils();
+                    bitmapUtils.convertDayCardBitmap(this, dayCard);
                 }
                 break;
         }
     }
 
-    @Override
-    public void onDeleteSuccess() {
-        noteCardList.clear();
-        mDeleteFab.setVisibility(View.GONE);
-    }
+
 
     @Override
     public void onLoadNoteSuccess(List<NoteCard> list, long day_id) {
-        if(list==null||list.size()==0){
+        if (list == null || list.size() == 0) {
             finish();
             return;
         }
         datas.clear();
-        for(NoteCard noteCard:list){
+        for (NoteCard noteCard : list) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
         adapter.notifyDataSetChanged();
@@ -184,7 +177,11 @@ public class DetailActivity extends BaseActivity implements ShareBitmapUtils.Con
 
     @Override
     public void onConvertSuccess(String imgPath) {
-        isGeneratingBitmap=false;
+        isGeneratingBitmap = false;
+//        Intent intent = new Intent(this, ImageDetailActivity.class);
+//        intent.putExtra(ImageDetailActivity.DETAIL_IMAGE_PATH, imgPath);
+//        startActivity(intent);
+
         Intent intent = new Intent(Intent.ACTION_SEND);
         File f = new File(imgPath);
         if (f != null && f.exists() && f.isFile()) {
@@ -196,11 +193,44 @@ public class DetailActivity extends BaseActivity implements ShareBitmapUtils.Con
         }
     }
 
-//    private void sendUpdateNoteIntent(List<NoteCard> mList){
-//        dayCard.setNoteSet(mList);
-//        Intent intent = new Intent();
-//        intent.setAction(PastFragment.UPDATE_NOTE_ACTION);
-//        intent.putExtra(PastFragment.UPDATE_NOTE_EXTRA, dayCard);
-//        sendBroadcast(intent);
-//    }
+    @Override
+    public void deleteNote(NoteCard noteCard) {
+        List<NoteCard> list=new ArrayList<NoteCard>();
+        list.add(noteCard);
+        dbService.deleteNote(list,null);
+    }
+
+    private static final int REQUEST_CODE_UPDATE_DIARY = 1444;
+
+    @Override
+    public void updateNote(NoteCard noteCard) {
+        Intent intent= new Intent(this, LongDiaryActivity.class);
+        intent.putExtra(LongDiaryActivity.UPDATE_DIARY_EXTRA_STRING,noteCard);
+        startActivityForResult(intent, REQUEST_CODE_UPDATE_DIARY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if(requestCode==REQUEST_CODE_UPDATE_DIARY){
+                if(data!=null){
+                    NoteCard card = (NoteCard)data.getSerializableExtra(LongDiaryActivity.UPDATED_NEW_DIARY_EXTRA_STRING);
+                    if(card!=null){
+                        dbService.updateNote(card);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void handleDialogDismiss() {
+        for(RecyclerViewAdapter.NoteCardWrapper item:datas){
+            if(item.isSelected()){
+                item.setIsSelected(false);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
 }

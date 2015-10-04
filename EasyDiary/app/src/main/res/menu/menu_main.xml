@@ -5,7 +5,8 @@
 
     <item
         android:id="@+id/id_action_title_show_day"
-        android:title="@string/action_title_show_day"
+        android:icon="@drawable/search_note_card_img"
+        android:title="@string/action_title_search"
         app:showAsAction="always"/>
 
 </menu>

@@ -212,6 +212,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     }
 
     private void setFabContainerComeIn() {
+        CommonUtils.hideKeyboard(mInputView.getEditText());
         Animation bt_animation = AnimationUtils.loadAnimation(getContext(), R.anim.bt_rotate);
         mSentBtn.startAnimation(bt_animation);
         isFabViewShowing = true;
@@ -430,10 +431,6 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         switch (v.getId()) {
             case R.id.send_bt_tv:
                 String content = mContentEt.getText().toString().trim();
-                if (TextUtils.isEmpty(content)) {
-                    Toast.makeText(getContext(), "Empty!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 sendTextNoteMsg(content);
                 mContentEt.setText("");
                 break;

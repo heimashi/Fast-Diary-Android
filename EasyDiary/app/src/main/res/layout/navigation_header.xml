@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="?attr/colorPrimaryDark"
-              android:gravity="center"
-              android:orientation="vertical"
-              android:padding="16dp"
-              android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimaryDark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-
-
-    <TextView
-        android:id="@+id/header_tv1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="20sp"/>
+    <!--<TextView-->
+    <!--android:id="@+id/header_tv1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:layout_marginBottom="25dp"-->
+    <!--android:gravity="left"-->
+    <!--android:text="@string/action_title_show_tint"-->
+    <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+    <!--android:textSize="15sp"/>-->
 
     <TextView
         android:id="@+id/header_tv2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
-        android:text="@string/app_name"
+        android:text="@string/action_title_show_day"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="20sp"/>
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/header_tv3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:text="@string/action_title_show_day"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="18sp" />
 
 </LinearLayout>

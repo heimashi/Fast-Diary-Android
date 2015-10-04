@@ -166,29 +166,6 @@ public class ShareBitmapUtils {
         return bitmap;
     }
 
-//    public Bitmap test(){
-//        Bitmap bitmap = Bitmap.createBitmap(400,400, Bitmap.Config.ARGB_8888);//创建一个宽度和高度都是400、32位ARGB图
-//        Canvas canvas =new Canvas(bitmap);//初始化画布绘制的图像到icon上
-//        canvas.drawColor(Color.GREEN);//图层的背景色
-//        Paint paint =new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);//创建画笔
-//        paint.setTextSize(15.0f);//设置文字的大小
-//        paint.setTypeface(Typeface.DEFAULT_BOLD);//文字的样式(加粗)
-//        paint.setColor(Color.GRAY);//文字的颜色
-//        canvas.drawText("zhou_guobao_fsdfslfsdfsfsfsdflfdsfldsjflsdjflksdfjsdklfsdfjsdfllfsdjfjdfdskljfjdsfksdfsjfkj中文中文fsjfsdlflkfsdjfsd是否见识到了副食店解放", 120, 130, paint);//将文字写入。这里面的（120，130）代表着文字在图层上的初始位置
-//        //canvas.drawBitmap();
-//        canvas.save(canvas.ALL_SAVE_FLAG);//保存所有图层
-//        canvas.restore();
-//        return bitmap;
-//
-//    }
-
-//    public void saveBitmaptoFile(int id){
-//        Drawable d= GlobalData.app().getResources().getDrawable(id);
-//        //先把Drawable转成Bitmap，如果是Bitmap，就不用这一步了
-//        Bitmap bmp=((BitmapDrawable)d).getBitmap();
-//        saveBitmaptoFile(bmp);
-//    }
-
     public void saveBitmaptoFile(Bitmap bmp,String imagePath){
         FileOutputStream fop;
         try {

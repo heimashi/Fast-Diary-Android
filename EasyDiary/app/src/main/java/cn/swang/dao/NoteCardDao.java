@@ -30,5 +30,7 @@ public interface NoteCardDao {
 
     List<NoteCard> fecthAll();
 
+    List<NoteCard> searchNoteCard(String input);
+
     List<NoteCard> findAllByDayid(DayCard dayCard);
 }

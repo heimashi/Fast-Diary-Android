@@ -7,7 +7,8 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="1dp"
-    card_view:cardBackgroundColor="@android:color/white"
+    android:background="@drawable/stagger_view_item_bg"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="5dp">
 

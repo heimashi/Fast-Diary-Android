@@ -35,6 +35,10 @@ public class DbService {
         new UpdateNoteAsyncTask(noteCard).execute();
     }
 
+    public void searchNote(String input,OnSearchNoteListener onSearchNoteListener){
+        new SearchNoteAsyncTask(input,onSearchNoteListener).execute();
+    }
+
     public void deleteNote(List<NoteCard> noteCardList,OnDeleteNoteListener onDeleteNoteListener) {
         new DeleteNoteAsyncTask(noteCardList,onDeleteNoteListener).execute();
     }
@@ -187,6 +191,30 @@ public class DbService {
             super.onPostExecute(v);
             if(onDeleteNoteListener!=null){
                 onDeleteNoteListener.onDeleteSuccess();
+            }
+        }
+    }
+
+    public interface OnSearchNoteListener {
+        void onSearchFinish(List<NoteCard> list);
+    }
+    class SearchNoteAsyncTask extends AsyncTask<Void,Void,List<NoteCard>>{
+        String input;
+        OnSearchNoteListener onSearchNoteListener;
+        public SearchNoteAsyncTask(String input,OnSearchNoteListener onSearchNoteListener){
+            this.input=input;
+            this.onSearchNoteListener=onSearchNoteListener;
+        }
+        @Override
+        protected List<NoteCard> doInBackground(Void... params) {
+            if(TextUtils.isEmpty(input)) return null;
+            return noteCardDao.searchNoteCard(input);
+        }
+        @Override
+        protected void onPostExecute(List<NoteCard> list) {
+            super.onPostExecute(list);
+            if(onSearchNoteListener!=null){
+                onSearchNoteListener.onSearchFinish(list);
             }
         }
     }

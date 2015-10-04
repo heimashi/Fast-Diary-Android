@@ -7,9 +7,12 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_title_show_week">星期五  </string>
+    <string name="action_title_search">Search  </string>
+    <string name="action_title_show_tint">今天是</string>
     <string name="action_title_show_day">9月17日</string>
     <string name="action_register">Register</string>
     <string name="sign_in">Sign in</string>
+    <string name="searh_tint">Search</string>
     <string name="write_long_diary">写日记</string>
     <string name="send_msg">发送</string>
     <string name="save_long_diary">SAVE  </string>
@@ -47,5 +50,13 @@
     <string name="note_dialog_item1">删除</string>
     <string name="note_dialog_item2">修改</string>
     <string name="note_dialog_item3">分享</string>
+
+    <string name="show_week1">星期一</string>
+    <string name="show_week2">星期二</string>
+    <string name="show_week3">星期三</string>
+    <string name="show_week4">星期四</string>
+    <string name="show_week5">星期五</string>
+    <string name="show_week6">星期六</string>
+    <string name="show_week7">星期日</string>
 
 </resources>

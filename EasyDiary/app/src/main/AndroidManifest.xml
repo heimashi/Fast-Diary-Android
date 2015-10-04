@@ -64,6 +64,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.ImagesDetail" />
 
+        <activity
+            android:name=".ui.activity.SearchActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/searh_tint"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoneTranslucent"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+<!-- android:theme="@style/AppTheme.NoneTranslucent"-->
     </application>
 
 </manifest>

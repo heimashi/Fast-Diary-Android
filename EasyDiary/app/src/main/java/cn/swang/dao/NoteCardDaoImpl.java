@@ -135,6 +135,50 @@ public class NoteCardDaoImpl implements  NoteCardDao{
     }
 
     @Override
+    public List<NoteCard> searchNoteCard(String input) {
+        ArrayList<NoteCard> result = null;
+        Cursor cursor = null;
+        SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
+        try {
+            String[] columns = {NoteCardDao.COLUMN_NAME_ID,
+                    NoteCardDao.COLUMN_NAME_DATE,
+                    NoteCardDao.COLUMN_NAME_CONTENT,
+                    NoteCardDao.COLUMN_NAME_IMGPATH,
+                    NoteCardDao.COLUMN_NAME_VOICEPATH,
+                    NoteCardDao.COLUMN_NAME_VOICELENGTH,
+                    NoteCardDao.COLUMN_NAME_DAY_ID};
+            String[] whereArgs = {"%"+input+"%"};
+            String WHERE_CLAUSE = NoteCardDao.COLUMN_NAME_CONTENT + " like ?";
+            cursor = database.query(NoteCardDao.TABLE_NAME, columns, WHERE_CLAUSE, whereArgs, null, null, null);
+            result = new ArrayList<>(cursor.getCount());
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                NoteCard noteCard = new NoteCard();
+                noteCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_ID)));
+                noteCard.setDate(new Date(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_DATE)));
+                noteCard.setContent(cursor.getString(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_CONTENT)));
+                noteCard.setImgPath(cursor.getString(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_IMGPATH)));
+                noteCard.setVoicePath(cursor.getString(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_VOICEPATH)));
+                noteCard.setVoiceLength(cursor.getInt(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_VOICELENGTH)));
+                noteCard.setDay_id(cursor.getLong(cursor.getColumnIndexOrThrow(NoteCardDao.COLUMN_NAME_DAY_ID)));
+                result.add(noteCard);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                    cursor=null;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            database.close();
+        }
+        return result;
+    }
+
+    @Override
     public List<NoteCard> findAllByDayid(DayCard dayCard) {
         ArrayList<NoteCard> result = null;
         Cursor cursor = null;

@@ -21,12 +21,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
+import cn.swang.R;
 import cn.swang.app.GlobalData;
 
 
 public class CommonUtils {
 
+    public static final String weeks[] = {GlobalData.app().getString(R.string.show_week7),
+            GlobalData.app().getString(R.string.show_week1),
+            GlobalData.app().getString(R.string.show_week2),
+            GlobalData.app().getString(R.string.show_week3),
+            GlobalData.app().getString(R.string.show_week4),
+            GlobalData.app().getString(R.string.show_week5),
+            GlobalData.app().getString(R.string.show_week6)
+    };
 
+    public static String getWeekString(int dayOfWeek) {
+        return weeks[dayOfWeek];
+    }
 
 
     /**
@@ -69,19 +81,17 @@ public class CommonUtils {
 
 
     //隐藏虚拟键盘
-    public static void hideKeyboard(View v)
-    {
-        InputMethodManager imm = ( InputMethodManager ) v.getContext( ).getSystemService( Context.INPUT_METHOD_SERVICE );
-        if ( imm.isActive( ) ) {
-            imm.hideSoftInputFromWindow( v.getApplicationWindowToken( ) , 0 );
+    public static void hideKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
 
         }
     }
 
     //显示虚拟键盘
-    public static void showKeyboard(View v)
-    {
-        InputMethodManager imm = ( InputMethodManager ) v.getContext( ).getSystemService( Context.INPUT_METHOD_SERVICE );
+    public static void showKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         imm.showSoftInput(v, InputMethodManager.SHOW_FORCED);
 
@@ -89,9 +99,8 @@ public class CommonUtils {
 
 
     //输入法是否显示着
-    public static boolean KeyBoard(EditText edittext)
-    {
-        InputMethodManager imm = ( InputMethodManager ) edittext.getContext( ).getSystemService( Context.INPUT_METHOD_SERVICE );
+    public static boolean KeyBoard(EditText edittext) {
+        InputMethodManager imm = (InputMethodManager) edittext.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         return imm.isActive();
     }
 
@@ -106,7 +115,6 @@ public class CommonUtils {
         }
         return info.versionCode;
     }
-
 
 
     /**
