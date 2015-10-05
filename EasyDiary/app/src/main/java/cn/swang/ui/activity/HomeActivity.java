@@ -145,17 +145,23 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            case R.id.nav_home_login:
-                                startActivityByMyself(LoginActivity.class, false);
-                                break;
-                            case R.id.nav_home_register:
-                                startActivityByMyself(RegisterActivity.class, false);
+//                            case R.id.nav_home_login:
+//                                startActivityByMyself(LoginActivity.class, false);
+//                                break;
+//                            case R.id.nav_home_register:
+//                                startActivityByMyself(RegisterActivity.class, false);
+//                                break;
+                            case R.id.nav_home_search:
+                                startActivityByMyself(SearchActivity.class,false);
                                 break;
                             case R.id.nav_home_password:
+                                startActivityByMyself(PasswordLockActivity.class,false);
                                 break;
                             case R.id.nav_messages_back:
+                                startActivityByMyself(FeedbackActivity.class,false);
                                 break;
                             case R.id.nav_setting:
+                                startActivityByMyself(SettingsActivity.class,false);
                                 break;
                         }
                         menuItem.setChecked(false);

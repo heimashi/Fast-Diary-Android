@@ -7,15 +7,17 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_title_show_week">星期五  </string>
-    <string name="action_title_search">Search  </string>
+    <string name="action_title_search">搜索</string>
     <string name="action_title_show_tint">今天是</string>
     <string name="action_title_show_day">9月17日</string>
     <string name="action_register">Register</string>
     <string name="sign_in">Sign in</string>
     <string name="searh_tint">Search</string>
     <string name="write_long_diary">写日记</string>
+    <string name="feedback_to_developer">欢迎您反馈意见，一起来改进最日记！</string>
     <string name="send_msg">发送</string>
     <string name="save_long_diary">SAVE  </string>
+    <string name="send_feedback">发送意见  </string>
     <string name="prompt_password">password</string>
     <string name="prompt_name">name</string>
     <string name="prompt_tint">用文字、声音、照片记录点滴</string>
@@ -40,16 +42,18 @@
     <string name="home_view_title2">往 昔</string>
     <string name="drawer_view_item1">登录</string>
     <string name="drawer_view_item2">注册</string>
-    <string name="drawer_view_item3">设置密码</string>
+    <string name="drawer_view_item3">密码锁</string>
     <string name="drawer_view_item4">意见反馈</string>
     <string name="drawer_view_item5">设置</string>
     <string name="drawer_view_other_item">Version 1.0</string>
-    <string name="drawer_view_other_item1">Welcome!</string>
+    <string name="drawer_view_other_item1">欢迎使用</string>
     <string name="drawer_view_other_item2">Easy Diary</string>
     <string name="note_content_can_not_be_empty">日记内容不能为空！</string>
     <string name="note_dialog_item1">删除</string>
     <string name="note_dialog_item2">修改</string>
     <string name="note_dialog_item3">分享</string>
+
+    <string name="feedback_tint">欢迎吐槽</string>
 
     <string name="show_week1">星期一</string>
     <string name="show_week2">星期二</string>

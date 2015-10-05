@@ -30,4 +30,5 @@ dependencies {
     compile 'com.github.rey5137:material:1.2.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'com.android.support:support-v4:23.0.1'
 }

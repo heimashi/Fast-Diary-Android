@@ -49,7 +49,7 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.scale_in2, 0);
+        //overridePendingTransition(R.anim.scale_in2, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         searchEditText = (EditText) findViewById(R.id.search_text_edit);
@@ -82,16 +82,16 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
 
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(0, R.anim.scale_out);
-    }
+//    @Override
+//    public void finish() {
+//        super.finish();
+//        overridePendingTransition(0, R.anim.scale_out);
+//    }
 
-    @Override
-    protected boolean useActivityAnimation() {
-        return false;
-    }
+//    @Override
+//    protected boolean useActivityAnimation() {
+//        return false;
+//    }
 
     @Override
     public void onSearchFinish(List<NoteCard> list) {
