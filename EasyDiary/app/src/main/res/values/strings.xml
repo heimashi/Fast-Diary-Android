@@ -17,6 +17,7 @@
     <string name="feedback_to_developer">欢迎您反馈意见，一起来改进最日记！</string>
     <string name="send_msg">发送</string>
     <string name="save_long_diary">SAVE  </string>
+    <string name="save">保存</string>
     <string name="send_feedback">发送意见  </string>
     <string name="prompt_password">password</string>
     <string name="prompt_name">name</string>
@@ -62,5 +63,8 @@
     <string name="show_week5">星期五</string>
     <string name="show_week6">星期六</string>
     <string name="show_week7">星期日</string>
+
+    <string name="settings_share">分享设置</string>
+    <string name="settings_share_picture_size">分享时图片大小</string>
 
 </resources>
