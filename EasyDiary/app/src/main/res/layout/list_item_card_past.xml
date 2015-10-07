@@ -7,14 +7,20 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="1dp"
-    android:background="@drawable/stagger_view_item_bg"
     card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="5dp">
+    <!--
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+?android:attr/selectableItemBackground
+android:background="@drawable/stagger_view_item_bg"
+     -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/stagger_view_item_bg"
         android:paddingBottom="12dp"
         android:orientation="vertical">
 

@@ -64,4 +64,8 @@
     <string name="settings_share">分享设置</string>
     <string name="settings_share_picture_size">分享时图片大小</string>
 
+    <string name="dialog_fragment_take_photo">拍照</string>
+    <string name="dialog_fragment_gallery">相册</string>
+    <string name="dialog_fragment_long_diary">长日记</string>
+
 </resources>

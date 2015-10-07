@@ -9,8 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -29,35 +28,79 @@
                 android:layout_gravity="bottom"
                 android:orientation="vertical">
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/list_fab1"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
-                    android:clickable="true"
-                    android:src="@drawable/fab_select_take_photo"
-                    app:borderWidth="0dp"
-                    app:fabSize="mini" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/list_fab2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:clickable="true"
-                    android:src="@drawable/fab_select_from_album"
-                    app:borderWidth="0dp"
-                    app:fabSize="mini" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/sr_color_primary"
+                        android:text="@string/dialog_fragment_take_photo" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/list_fab3"
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/list_fab1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:src="@drawable/fab_select_take_photo"
+                        app:borderWidth="0dp"
+                        app:fabSize="mini" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
-                    android:clickable="true"
-                    android:src="@drawable/fab_edit_text"
-                    app:borderWidth="0dp"
-                    app:fabSize="mini" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/sr_color_primary"
+                        android:text="@string/dialog_fragment_gallery" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/list_fab2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:clickable="true"
+                        android:src="@drawable/fab_select_from_album"
+                        app:borderWidth="0dp"
+                        app:fabSize="mini" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|bottom"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/sr_color_primary"
+                        android:text="@string/dialog_fragment_long_diary" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/list_fab3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:clickable="true"
+                        android:src="@drawable/fab_edit_text"
+                        app:borderWidth="0dp"
+                        app:fabSize="mini" />
+                </LinearLayout>
             </LinearLayout>
         </FrameLayout>
 

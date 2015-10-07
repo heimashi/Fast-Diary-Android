@@ -7,7 +7,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_title_show_week">Friday  </string>
-    <string name="action_title_search">search</string>
+    <string name="action_title_search">Search</string>
     <string name="action_title_show_tint">today is</string>
     <string name="action_title_show_day">Sept.17</string>
     <string name="action_register">Register</string>
@@ -67,4 +67,7 @@
     <string name="settings_share">Share settings</string>
     <string name="settings_share_picture_size">the size of picture when sharing</string>
 
+    <string name="dialog_fragment_take_photo">Take Photo</string>
+    <string name="dialog_fragment_gallery">Gallery</string>
+    <string name="dialog_fragment_long_diary">Long Diary</string>
 </resources>

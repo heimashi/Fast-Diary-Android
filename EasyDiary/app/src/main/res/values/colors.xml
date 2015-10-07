@@ -6,6 +6,7 @@
     <color name="sr_color_primary_light">#FF4DF70F</color>
     <color name="sr_window_background">#FFFEFEFE</color>
     <color name="alpha_5_sr_color_primary">#0D69A252</color>
+    <color name="alpha_0">#00FFFFFF</color>
     <color name="alpha_10_sr_color_primary">#1A69A252</color>
     <color name="alpha_20_sr_color_primary">#3369A252</color>
     <color name="alpha_30_sr_color_primary">#4D69A252</color>
