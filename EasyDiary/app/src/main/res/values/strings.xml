@@ -72,5 +72,7 @@
     <string name="dialog_fragment_gallery">Gallery</string>
     <string name="dialog_fragment_long_diary">Long Diary</string>
 
-    <string name="confirm_text">Confirm</string>
+    <string name="confirm_text">Confirm  </string>
+    <string name="empty_tint">Start a diary now</string>
+    <string name="diary_empty_tint">Diary is empty</string>
 </resources>

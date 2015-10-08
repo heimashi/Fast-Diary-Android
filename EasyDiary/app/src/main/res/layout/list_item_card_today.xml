@@ -46,8 +46,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/adj"
-            android:padding="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="6dp"
             android:paddingTop="6dp" />
 
         <TextView

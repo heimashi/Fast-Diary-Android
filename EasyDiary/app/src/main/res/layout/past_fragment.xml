@@ -11,6 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <LinearLayout
+        android:id="@+id/past_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/past_empty_view"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/alpha_50_sr_color_primary"
+            android:textSize="12sp"
+            android:text="@string/diary_empty_tint"/>
+    </LinearLayout>
     <!--<android.support.design.widget.FloatingActionButton-->
         <!--android:id="@+id/past_delete_day_card_fab"-->
         <!--android:layout_width="wrap_content"-->

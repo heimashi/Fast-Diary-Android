@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class PastFragment extends BaseFragment implements DayCardDialogManager.D
 
     private RelativeLayout mRelativeLayout;
     private RecyclerView mRecyclerView;
+    private LinearLayout mEmptyView;
     private List<StaggeredAdapter.DayCardWrapper> datas = new ArrayList<StaggeredAdapter.DayCardWrapper>();
     private StaggeredAdapter adapter;
     private DbService dbService;
@@ -51,6 +53,7 @@ public class PastFragment extends BaseFragment implements DayCardDialogManager.D
         mRelativeLayout =
                 (RelativeLayout) inflater.inflate(R.layout.past_fragment, container, false);
         mRecyclerView = (RecyclerView) mRelativeLayout.findViewById(R.id.recycler_view);
+        mEmptyView = (LinearLayout) mRelativeLayout.findViewById(R.id.past_empty_view);
         return mRelativeLayout;
     }
 
@@ -97,7 +100,12 @@ public class PastFragment extends BaseFragment implements DayCardDialogManager.D
 
     @Override
     public void onLoadDiarySuccess(List<DayCard> list) {
-        if (list == null || list.size() == 0) return;
+        if (list == null || list.size() == 0){
+            mEmptyView.setVisibility(View.VISIBLE);
+            return;
+        }else {
+            mEmptyView.setVisibility(View.GONE);
+        }
         datas.clear();
         for (DayCard dayCard : list) {
             datas.add(new StaggeredAdapter.DayCardWrapper(dayCard));

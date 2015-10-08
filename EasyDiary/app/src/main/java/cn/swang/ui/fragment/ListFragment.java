@@ -55,7 +55,7 @@ import cn.swang.utils.CommonUtils;
 import cn.swang.utils.MediaManager;
 import cn.swang.utils.NoteDialogManager;
 
-public class ListFragment extends BaseFragment implements NoteDialogManager.NoteDialogHandle,MyDialog.DialogDismissCallBack,DbService.LoadTodayNoteListener, View.OnClickListener, RecyclerViewAdapter.OnItemLongClickListener {
+public class ListFragment extends BaseFragment implements NoteDialogManager.NoteDialogHandle, MyDialog.DialogDismissCallBack, DbService.LoadTodayNoteListener, View.OnClickListener, RecyclerViewAdapter.OnItemLongClickListener {
 
 
     private static final int REQUEST_CODE_PICK_IMAGE = 1000;
@@ -63,7 +63,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     private static final int REQUEST_CODE_LONG_DIARY = 1222;
     private static final int REQUEST_CODE_UPDATE_DIARY = 1333;
     private long mDayId = -1;
-    private LinearLayout mLinearLayout;
+    private LinearLayout mLinearLayout,mEmptyView;
     private RecyclerView mRecyclerView;
     private TextInputLayout mInputView;
     private EditText mContentEt;
@@ -88,6 +88,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         mLinearLayout =
                 (LinearLayout) inflater.inflate(R.layout.list_fragment, container, false);
         mRecyclerView = (RecyclerView) mLinearLayout.findViewById(R.id.recycler_view);
+        mEmptyView = (LinearLayout)mLinearLayout.findViewById(R.id.list_empty_view);
         mInputView = (TextInputLayout) mLinearLayout.findViewById(R.id.input_layout);
         fabContainer = (FrameLayout) mLinearLayout.findViewById(R.id.other_btn_view);
         mFab1 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab1);
@@ -232,13 +233,12 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     }
 
 
-
-    NoteDialogManager noteDialogManager=null;
+    NoteDialogManager noteDialogManager = null;
 
     @Override
     public void onItemLongClick(View v, int position) {
         datas.get(position).setIsSelected(true);
-        noteDialogManager = new NoteDialogManager(getContext(),datas.get(position).getNoteCard());
+        noteDialogManager = new NoteDialogManager(getContext(), datas.get(position).getNoteCard());
         noteDialogManager.showNoteLongClickDialog();
         noteDialogManager.setDismissCallBack(this);
         noteDialogManager.setNoteDialogHandle(this);
@@ -247,8 +247,8 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
 
     @Override
     public void handleDialogDismiss() {
-        for(RecyclerViewAdapter.NoteCardWrapper item:datas){
-            if(item.isSelected()){
+        for (RecyclerViewAdapter.NoteCardWrapper item : datas) {
+            if (item.isSelected()) {
                 item.setIsSelected(false);
             }
         }
@@ -256,7 +256,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     }
 
     public void writeLongDiary() {
-        Intent intent= new Intent(getActivity(), LongDiaryActivity.class);
+        Intent intent = new Intent(getActivity(), LongDiaryActivity.class);
         startActivityForResult(intent, REQUEST_CODE_LONG_DIARY);
     }
 
@@ -307,15 +307,15 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
                         sendPicByUri(selectedImage);
                     }
                 }
-            }else if(requestCode==REQUEST_CODE_LONG_DIARY){
-                if(data!=null){
+            } else if (requestCode == REQUEST_CODE_LONG_DIARY) {
+                if (data != null) {
                     String content = data.getStringExtra(LongDiaryActivity.LONG_DIARY_EXTRA_STRING);
                     sendTextNoteMsg(content);
                 }
-            }else if(requestCode==REQUEST_CODE_UPDATE_DIARY){
-                if(data!=null){
-                    NoteCard card = (NoteCard)data.getSerializableExtra(LongDiaryActivity.UPDATED_NEW_DIARY_EXTRA_STRING);
-                    if(card!=null){
+            } else if (requestCode == REQUEST_CODE_UPDATE_DIARY) {
+                if (data != null) {
+                    NoteCard card = (NoteCard) data.getSerializableExtra(LongDiaryActivity.UPDATED_NEW_DIARY_EXTRA_STRING);
+                    if (card != null) {
                         dbService.updateNote(card);
                     }
                 }
@@ -391,18 +391,25 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     }
 
 
-
     @Override
     public void onLoadNoteSuccess(List<NoteCard> list, long day_id) {
         if (day_id != -1) mDayId = day_id;
-        if (list == null) return;
-        if(list.size()==0) mDayId=-1;
+        if (list == null) {
+            mEmptyView.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (list.size() == 0) {
+            mDayId = -1;
+            mEmptyView.setVisibility(View.VISIBLE);
+        }else{
+            mEmptyView.setVisibility(View.GONE);
+        }
         datas.clear();
         for (NoteCard noteCard : list) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
         adapter.notifyDataSetChanged();
-        if(datas.size()>0) mRecyclerView.scrollToPosition(datas.size() - 1);
+        if (datas.size() > 0) mRecyclerView.scrollToPosition(datas.size() - 1);
     }
 
 
@@ -474,15 +481,15 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
 
     @Override
     public void deleteNote(NoteCard noteCard) {
-        List<NoteCard> list=new ArrayList<NoteCard>();
+        List<NoteCard> list = new ArrayList<NoteCard>();
         list.add(noteCard);
-        dbService.deleteNote(list,null);
+        dbService.deleteNote(list, null);
     }
 
     @Override
     public void updateNote(NoteCard noteCard) {
-        Intent intent= new Intent(getActivity(), LongDiaryActivity.class);
-        intent.putExtra(LongDiaryActivity.UPDATE_DIARY_EXTRA_STRING,noteCard);
+        Intent intent = new Intent(getActivity(), LongDiaryActivity.class);
+        intent.putExtra(LongDiaryActivity.UPDATE_DIARY_EXTRA_STRING, noteCard);
         startActivityForResult(intent, REQUEST_CODE_UPDATE_DIARY);
     }
 }
