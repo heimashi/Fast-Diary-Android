@@ -76,6 +76,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoneTranslucent"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".ui.activity.ShareDayCardActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/share_day_card_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoneTranslucent"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
         <activity
             android:name=".ui.activity.ImageDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

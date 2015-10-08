@@ -34,7 +34,7 @@
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/afternoon"
+                    android:src="@drawable/daycard_image_default"
                     app:layout_collapseMode="parallax" />
 
                 <ImageView

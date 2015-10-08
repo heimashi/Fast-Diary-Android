@@ -34,7 +34,7 @@ public class SplashPresenter implements BasePresenter {
     public void initialized() {
         mSplashView.initializeViews(getVersionName(mContext),
                 getCopyright(mContext),
-                getBackgroundImageResID());
+                0);//android:icon="@mipmap/ic_action_scan"
         initData(mContext);
         mSplashView.navigateToHomePage();
 //        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.splash);
@@ -94,20 +94,6 @@ public class SplashPresenter implements BasePresenter {
                 //dbService.saveNote(noteCard);
             }
         }
-    }
-
-    public int getBackgroundImageResID() {
-        int resId;
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(calendar.HOUR_OF_DAY);
-        if (hour >= 6 && hour <= 12) {
-            resId = R.mipmap.morning;
-        } else if (hour > 12 && hour <= 18) {
-            resId = R.drawable.afternoon;
-        } else {
-            resId = R.mipmap.night;
-        }
-        return resId;
     }
 
     public String getVersionName(Context context) {

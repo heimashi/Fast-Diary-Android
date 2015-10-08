@@ -43,6 +43,7 @@
             android:id="@+id/search_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
             android:background="@drawable/search_note_card_img" />
 
     </LinearLayout>
@@ -61,9 +62,10 @@
     <!--app:v_styleId="@array/pv_linear"/>-->
     <com.rey.material.widget.ProgressView
         android:id="@+id/progress_pv_linear"
-        android:layout_width="48dp"
-        android:layout_height="24dp"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
         android:layout_gravity="center"
+        android:layout_marginTop="8dp"
         android:visibility="gone"
         app:pv_autostart="true"
         app:pv_circular="true"

@@ -6,7 +6,6 @@
         android:id="@+id/action_register"
         android:title="@string/action_register"
         android:orderInCategory="100"
-        android:icon="@mipmap/ic_action_scan"
         android:titleCondensed="@string/action_register"
         app:showAsAction="always"/>
 

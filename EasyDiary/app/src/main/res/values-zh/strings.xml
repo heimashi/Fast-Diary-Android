@@ -68,4 +68,6 @@
     <string name="dialog_fragment_gallery">相册</string>
     <string name="dialog_fragment_long_diary">长日记</string>
 
+    <string name="share_day_card_title">分享日记</string>
+    <string name="confirm_text">确认</string>
 </resources>

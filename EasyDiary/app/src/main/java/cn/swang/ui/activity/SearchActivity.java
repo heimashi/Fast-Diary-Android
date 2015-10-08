@@ -76,6 +76,7 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
 
             @Override
             public void afterTextChanged(Editable s) {
+                //if(s.length()<2) return;
                 dbService.searchNote(s.toString(), SearchActivity.this);
             }
         });

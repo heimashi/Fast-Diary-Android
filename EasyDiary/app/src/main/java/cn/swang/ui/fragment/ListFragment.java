@@ -41,6 +41,7 @@ import java.util.List;
 import cn.swang.R;
 import cn.swang.app.GlobalData;
 import cn.swang.app.IConstants;
+import cn.swang.dao.DayCardDao;
 import cn.swang.dao.DbService;
 import cn.swang.dao.NoteCardDao;
 import cn.swang.entity.DayCard;
@@ -394,13 +395,14 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     @Override
     public void onLoadNoteSuccess(List<NoteCard> list, long day_id) {
         if (day_id != -1) mDayId = day_id;
-        if (list == null || list.size() == 0) return;
+        if (list == null) return;
+        if(list.size()==0) mDayId=-1;
         datas.clear();
         for (NoteCard noteCard : list) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
         adapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(datas.size() - 1);
+        if(datas.size()>0) mRecyclerView.scrollToPosition(datas.size() - 1);
     }
 
 

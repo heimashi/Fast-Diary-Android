@@ -81,7 +81,6 @@ public class ShareBitmapUtils {
                 bitmap_height+=Math.ceil(noteCard.getContent().length() * 1.0 / textWordCount)*textHeight;
             }else if(!TextUtils.isEmpty(noteCard.getImgPath())){
                 final String key = noteCard.getImgPath();
-                String uri = ImageDownloader.Scheme.FILE.wrap(noteCard.getImgPath());
                 Bitmap mbitmap=BitmapFactory.decodeFile(noteCard.getImgPath());
                 if(mbitmap.getWidth()>bitmap_width){
                     int height = (int) ((mbitmap.getHeight()*bitmap_width/mbitmap.getWidth())*bitmapRadio);

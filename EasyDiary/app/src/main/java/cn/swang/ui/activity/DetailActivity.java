@@ -101,7 +101,7 @@ public class DetailActivity extends BaseActivity implements DbService.LoadDayCar
             String imageUri = ImageDownloader.Scheme.FILE.wrap(dayCard.getDayImagePath());
             ImageLoader.getInstance().displayImage(imageUri, mDayCardImageView);
         }else {
-            mDayCardImageView.setBackgroundResource(R.drawable.afternoon);
+            mDayCardImageView.setBackgroundResource(R.drawable.daycard_image_default);
         }
         datas.clear();
         for (NoteCard note : dayCard.getNoteSet()) {
@@ -191,6 +191,7 @@ public class DetailActivity extends BaseActivity implements DbService.LoadDayCar
         for (NoteCard noteCard : list) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
         }
+        dayCard.setNoteSet(list);
         adapter.notifyDataSetChanged();
         //mRecyclerView.scrollToPosition(datas.size() - 1);
     }
@@ -198,19 +199,9 @@ public class DetailActivity extends BaseActivity implements DbService.LoadDayCar
     @Override
     public void onConvertSuccess(String imgPath) {
         isGeneratingBitmap = false;
-//        Intent intent = new Intent(this, ImageDetailActivity.class);
-//        intent.putExtra(ImageDetailActivity.DETAIL_IMAGE_PATH, imgPath);
-//        startActivity(intent);
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        File f = new File(imgPath);
-        if (f != null && f.exists() && f.isFile()) {
-            intent.setType("image/jpg");
-            Uri u = Uri.fromFile(f);
-            intent.putExtra(Intent.EXTRA_STREAM, u);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(Intent.createChooser(intent, "请选择"));
-        }
+        Intent intent = new Intent(this, ShareDayCardActivity.class);
+        intent.putExtra(ShareDayCardActivity.SHARE_IMAGE_PATH, imgPath);
+        startActivity(intent);
     }
 
     @Override
