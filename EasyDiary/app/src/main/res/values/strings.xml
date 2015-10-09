@@ -76,6 +76,7 @@
     <string name="confirm_text">Confirm  </string>
     <string name="empty_tint">Start a diary now</string>
     <string name="diary_empty_tint">Diary is empty</string>
+    <string name="diary_is_empty_tint">Diary is empty</string>
     <string name="share_confirm_text">Confirm</string>
     <string name="share_cancel_text">Cancel</string>
     <string name="output_day_card_title">Export Diary</string>

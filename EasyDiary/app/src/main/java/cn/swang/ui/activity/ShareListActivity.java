@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.rey.material.widget.ProgressView;
 
@@ -37,6 +38,7 @@ public class ShareListActivity extends BaseActivity implements LoadDiaryListener
     private ShareRecylerViewAdapter mAdapter;
     private List<DayCard> mList = new ArrayList<DayCard>();
     private ProgressView pv_linear;
+    private LinearLayout mEmptyLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class ShareListActivity extends BaseActivity implements LoadDiaryListener
         setContentView(R.layout.activity_share_list);
         mRecyclerView = (RecyclerView) findViewById(R.id.search_activity_recycler_view);
         pv_linear = (ProgressView)findViewById(R.id.progress_pv_linear);
+        mEmptyLayout = (LinearLayout)findViewById(R.id.list_empty_view);
         dbService = new DbService(this);
         dbService.loadAllDiary(this);
         pv_linear.setVisibility(View.VISIBLE);
@@ -66,10 +69,12 @@ public class ShareListActivity extends BaseActivity implements LoadDiaryListener
         pv_linear.setVisibility(View.GONE);
         if(list==null||list.size()==0){
             mList.clear();
+            mEmptyLayout.setVisibility(View.VISIBLE);
             mAdapter.notifyDataSetChanged();
             return;
         }
         mList=list;
+        mEmptyLayout.setVisibility(View.GONE);
         mAdapter.setDatas(mList);
         mAdapter.notifyDataSetChanged();
     }

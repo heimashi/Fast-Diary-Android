@@ -72,6 +72,7 @@
     <string name="share_day_card_title">分享日记</string>
     <string name="confirm_text">确定  </string>
     <string name="empty_tint">开始写日记</string>
+    <string name="diary_is_empty_tint">日记为空</string>
     <string name="diary_empty_tint">日记本为空</string>
     <string name="share_confirm_text">发送</string>
     <string name="share_cancel_text">取消</string>

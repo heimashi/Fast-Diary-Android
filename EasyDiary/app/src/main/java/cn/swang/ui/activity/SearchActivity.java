@@ -42,6 +42,7 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
     private RecyclerView mRecyclerView;
     private DbService dbService;
     private ImageView backButton, searchButton;
+    private LinearLayout mEmptyLayout;
     private SearchRecylerViewAdapter mAdapter;
     private List<NoteCard> mList = new ArrayList<NoteCard>();
     private ProgressView pv_linear;
@@ -57,6 +58,8 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
         backButton = (ImageView)findViewById(R.id.search_back_view);
         searchButton = (ImageView)findViewById(R.id.search_image_view);
         pv_linear = (ProgressView)findViewById(R.id.progress_pv_linear);
+        mEmptyLayout = (LinearLayout)findViewById(R.id.list_empty_view);
+        mEmptyLayout.setVisibility(View.VISIBLE);
         mHandler = new Handler(this);
         backButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -101,6 +104,11 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
             mList.clear();
         }else {
             mList = list;
+        }
+        if(mList.size()==0){
+            mEmptyLayout.setVisibility(View.VISIBLE);
+        }else {
+            mEmptyLayout.setVisibility(View.GONE);
         }
         mAdapter.setDatas(mList);
         mAdapter.notifyDataSetChanged();
