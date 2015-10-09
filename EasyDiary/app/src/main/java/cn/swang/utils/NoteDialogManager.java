@@ -1,9 +1,11 @@
 package cn.swang.utils;
 
 import android.app.Dialog;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -37,7 +40,7 @@ public class NoteDialogManager {
     public static final int AUDIO_DIALOG = 113;
     private MyDialog mDialog;
     private Context mContext;
-    private String textDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1), GlobalData.app().getString(R.string.note_dialog_item2), GlobalData.app().getString(R.string.note_dialog_item3)};
+    private String textDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1), GlobalData.app().getString(R.string.note_dialog_item2), GlobalData.app().getString(R.string.note_dialog_item3), GlobalData.app().getString(R.string.note_dialog_item4)};
     private String photoDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1), GlobalData.app().getString(R.string.note_dialog_item3)};
     private String audioDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1)};
     public int DIALOG_STATE;
@@ -121,6 +124,11 @@ public class NoteDialogManager {
                             mContext.startActivity(Intent.createChooser(intent, "请选择"));
                         }
                     }
+                } else if (select.equals(textDatas[3])) {
+                    ClipboardManager clipboardManager =(ClipboardManager) GlobalData.app().getSystemService(Context.CLIPBOARD_SERVICE);
+                    clipboardManager.setText(mNoteCard.getContent());
+                    Toast.makeText(mContext,mContext.getString(R.string.already_copy_to_clip),Toast.LENGTH_SHORT).show();
+                    //Snackbar.make(mListView,mContext.getString(R.string.already_copy_to_clip),Snackbar.LENGTH_SHORT).show();
                 }
                 dimissDialog();
             }

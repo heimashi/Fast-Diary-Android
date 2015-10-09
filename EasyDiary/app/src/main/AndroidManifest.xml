@@ -78,6 +78,14 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
+            android:name=".ui.activity.AboutUsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/about_us"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoneTranslucent"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
             android:name=".ui.activity.ShareDayCardActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
@@ -99,6 +107,13 @@
             android:name=".ui.activity.ShareListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/share_day_card_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoneTranslucent"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".ui.activity.ExportDiaryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/output_day_card_to_sd_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoneTranslucent"
             android:windowSoftInputMode="adjustResize|stateHidden" />

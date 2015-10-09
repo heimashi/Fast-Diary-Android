@@ -53,6 +53,7 @@
     <string name="note_dialog_item1">Delete</string>
     <string name="note_dialog_item2">Modify</string>
     <string name="note_dialog_item3">Share</string>
+    <string name="note_dialog_item4">Copy</string>
     <string name="share_day_card_title">Share Diary</string>
 
     <string name="feedback_tint">Welcome Feedback</string>
@@ -75,10 +76,12 @@
     <string name="confirm_text">Confirm  </string>
     <string name="empty_tint">Start a diary now</string>
     <string name="diary_empty_tint">Diary is empty</string>
-    <string name="share_confirm_text">Confirm to share</string>
+    <string name="share_confirm_text">Confirm</string>
     <string name="share_cancel_text">Cancel</string>
     <string name="output_day_card_title">Export Diary</string>
-
+    <string name="output_day_card_to_sd_title">Export Diary to SD card</string>
+    <string name="already_save_to_title">Saved to </string>
     <string name="share_day_card_count_title">%d diaries</string>
-
+    <string name="already_copy_to_clip">copied!</string>
+    <string name="about_us">About Us</string>
 </resources>

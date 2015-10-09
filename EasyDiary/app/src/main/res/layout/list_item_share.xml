@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="4dp"
+    android:layout_margin="3dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     card_view:cardBackgroundColor="@color/white"
@@ -26,7 +26,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="7dp"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/share_daycard_size_tv"
@@ -41,10 +41,12 @@
 
         <ImageView
             android:layout_gravity="right|center_vertical"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginRight="40dp"
-            android:src="@drawable/fab_share_button" />
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:alpha="100"
+            android:layout_marginRight="25dp"
+            android:id="@+id/list_item_img"
+            android:src="@drawable/share_img_light" />
     </LinearLayout>
 
 

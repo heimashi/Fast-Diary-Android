@@ -9,7 +9,7 @@
 
     <ListView
         android:id="@+id/dialog_note_list_view"
-        android:layout_width="200dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"/>
 
 </LinearLayout>

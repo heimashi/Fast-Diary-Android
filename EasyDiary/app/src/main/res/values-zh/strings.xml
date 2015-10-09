@@ -50,6 +50,7 @@
     <string name="note_dialog_item1">删除</string>
     <string name="note_dialog_item2">修改</string>
     <string name="note_dialog_item3">分享</string>
+    <string name="note_dialog_item4">复制</string>
 
     <string name="feedback_tint">欢迎吐槽</string>
 
@@ -72,9 +73,12 @@
     <string name="confirm_text">确定  </string>
     <string name="empty_tint">开始写日记</string>
     <string name="diary_empty_tint">日记本为空</string>
-    <string name="share_confirm_text">发送分享</string>
-    <string name="share_cancel_text">取消分享</string>
+    <string name="share_confirm_text">发送</string>
+    <string name="share_cancel_text">取消</string>
     <string name="output_day_card_title">导出日记</string>
-
+    <string name="output_day_card_to_sd_title">导出日记到SD卡</string>
+    <string name="already_save_to_title">已保存到</string>
     <string name="share_day_card_count_title">%d条日记</string>
+    <string name="already_copy_to_clip">已复制到剪贴板</string>
+    <string name="about_us">关于我们</string>
 </resources>

@@ -158,13 +158,13 @@ public class HomeActivity extends BaseActivity {
                                 startActivityByMyself(ShareListActivity.class,false);
                                 break;
                             case R.id.nav_home_export_diary:
-                                startActivityByMyself(PasswordLockActivity.class,false);
+                                startActivityByMyself(ExportDiaryActivity.class,false);
                                 break;
                             case R.id.nav_messages_back:
                                 startActivityByMyself(FeedbackActivity.class,false);
                                 break;
-                            case R.id.nav_setting:
-                                startActivityByMyself(SettingsActivity.class,false);
+                            case R.id.nav_about_us:
+                                startActivityByMyself(AboutUsActivity.class,false);
                                 break;
                         }
                         menuItem.setChecked(false);

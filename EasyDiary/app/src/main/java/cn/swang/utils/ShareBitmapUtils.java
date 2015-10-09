@@ -71,12 +71,14 @@ public class ShareBitmapUtils {
         int bitmap_height = 180;//header+footer
         int bitmap_width = 600;
         int textWordCount = 22;
+        int noteMargin = 10;
         int textHeight = 30;
         int bitmapMargin = 30;
         float bitmapRadio = 0.83f;
         //caculate width height
         for(NoteCard noteCard:dayCard.getNoteSet()){
             if(!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
+            bitmap_height+=noteMargin;
             if(!TextUtils.isEmpty(noteCard.getContent())){
                 bitmap_height+=Math.ceil(noteCard.getContent().length() * 1.0 / textWordCount)*textHeight;
             }else if(!TextUtils.isEmpty(noteCard.getImgPath())){
@@ -109,6 +111,7 @@ public class ShareBitmapUtils {
         //y=95
         for(NoteCard noteCard:dayCard.getNoteSet()){
             if(!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
+            y+=noteMargin;
             if(!TextUtils.isEmpty(noteCard.getContent())){
                 //draw text
                 String text = noteCard.getContent();

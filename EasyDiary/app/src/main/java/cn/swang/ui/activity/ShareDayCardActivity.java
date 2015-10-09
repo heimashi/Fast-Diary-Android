@@ -81,6 +81,7 @@ public class ShareDayCardActivity extends BaseActivity {
         //finish();
     }
     public void click_cancel_fab(View v){
+
         finish();
     }
 
