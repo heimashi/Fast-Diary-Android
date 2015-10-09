@@ -154,7 +154,10 @@ public class HomeActivity extends BaseActivity {
                             case R.id.nav_home_search:
                                 startActivityByMyself(SearchActivity.class,false);
                                 break;
-                            case R.id.nav_home_password:
+                            case R.id.nav_home_share_diary:
+                                startActivityByMyself(ShareListActivity.class,false);
+                                break;
+                            case R.id.nav_home_export_diary:
                                 startActivityByMyself(PasswordLockActivity.class,false);
                                 break;
                             case R.id.nav_messages_back:

@@ -1,27 +1,98 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/activity_vertical_margin">
-
-    <include
-        layout="@layout/common_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:background="@color/alpha_10_sr_color_primary"
+    android:gravity="center_horizontal">
 
     <ScrollView
         android:id="@+id/share_daycard_scroll_layout"
         android:layout_width="match_parent"
-        android:scrollbars="none"
         android:layout_height="wrap_content"
-        >
+        android:scrollbars="none">
 
-        <ImageView
-            android:id="@+id/share_daycard_image"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:adjustViewBounds="true"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="22dp"
+                android:background="@color/sr_color_primary" />
+
+            <ImageView
+                android:id="@+id/share_daycard_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.66dp"
+                android:background="@color/sr_color_primary" />
+        </LinearLayout>
+
     </ScrollView>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/share_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/share_confirm_text"
+                android:textColor="@color/sr_color_primary"
+                android:textSize="12sp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/share_fab_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:onClick="click_confirm_fab"
+                android:src="@drawable/fab_share_button"
+                app:borderWidth="0dp"
+                app:fabSize="normal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/share_cancel_text"
+                android:textColor="@color/sr_color_primary"
+                android:textSize="12sp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/share_fab_concel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:clickable="true"
+                android:onClick="click_cancel_fab"
+                android:src="@drawable/cancel_normal_light"
+                app:borderWidth="0dp"
+                app:fabSize="normal" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

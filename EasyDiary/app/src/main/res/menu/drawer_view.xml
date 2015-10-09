@@ -7,8 +7,11 @@
             android:id="@+id/nav_home_search"
             android:title="@string/action_title_search" />
         <item
-            android:id="@+id/nav_home_password"
-            android:title="@string/drawer_view_item3" />
+            android:id="@+id/nav_home_share_diary"
+            android:title="@string/share_day_card_title" />
+        <item
+            android:id="@+id/nav_home_export_diary"
+            android:title="@string/output_day_card_title" />
         <item
             android:id="@+id/nav_messages_back"
             android:title="@string/drawer_view_item4" />
