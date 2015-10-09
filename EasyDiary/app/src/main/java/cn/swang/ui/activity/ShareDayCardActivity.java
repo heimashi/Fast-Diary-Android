@@ -81,13 +81,26 @@ public class ShareDayCardActivity extends BaseActivity {
         //finish();
     }
     public void click_cancel_fab(View v){
-
         finish();
     }
 
     @Override
     public void finish() {
         super.finish();
+        //delete diary file
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    File f=new File(imageUrl);
+                    if(f.exists()){
+                        f.delete();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         overridePendingTransition(0, R.anim.scale_out);
     }
 
