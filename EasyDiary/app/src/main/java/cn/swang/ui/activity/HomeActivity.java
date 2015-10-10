@@ -1,12 +1,8 @@
 package cn.swang.ui.activity;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -20,10 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.umeng.update.UmengUpdateAgent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 
 import cn.swang.R;
-import cn.swang.app.GlobalData;
 import cn.swang.ui.adapter.FragmentAdapter;
 import cn.swang.ui.base.BaseActivity;
 import cn.swang.ui.fragment.ListFragment;
@@ -50,6 +46,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UmengUpdateAgent.update(this);
         setContentView(R.layout.activity_main);
 
         final ActionBar ab = getSupportActionBar();

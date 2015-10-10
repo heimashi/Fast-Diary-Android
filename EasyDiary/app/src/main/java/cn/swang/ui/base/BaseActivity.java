@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 import cn.swang.R;
@@ -114,6 +115,18 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void executeHttpRequest(Request<?> request) {
         RequestManager.addRequest(request, LOG_TAG);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
