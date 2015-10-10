@@ -86,6 +86,7 @@ public class AudioManager {
     public int getVoiceLevel(int maxLevel){
         if(isPrepared){
             try {
+                if(mMediaRecorder==null) return 1;
                 //1-32767
                 return maxLevel*mMediaRecorder.getMaxAmplitude()/32768+1;
             }catch (Exception e){

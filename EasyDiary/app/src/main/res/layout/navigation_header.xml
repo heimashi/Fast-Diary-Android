@@ -5,7 +5,8 @@
     android:background="?attr/colorPrimaryDark"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <!--<TextView-->

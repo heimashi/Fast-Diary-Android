@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">最日记</string>
-    <string name="from_app_name">来自最日记</string>
-    <string name="app_start">最日记</string>
+    <string name="app_name">快日记</string>
+    <string name="from_app_name">来自快日记</string>
+    <string name="app_start">快日记</string>
     <string name="splash_version">V %1$s</string>
     <string name="splash_copyright">Copyright &#169; 2015 SW All Rights Reserved\nPower by Obsessive and Chris</string>
 
@@ -14,7 +14,7 @@
     <string name="sign_in">登录</string>
     <string name="searh_tint">搜索</string>
     <string name="write_long_diary">写日记</string>
-    <string name="feedback_to_developer">欢迎您反馈意见，一起来改进最日记！</string>
+    <string name="feedback_to_developer">欢迎您反馈意见，一起来改进快日记！</string>
     <string name="send_msg">发送</string>
     <string name="save_long_diary">保存   </string>
     <string name="save">保存</string>
@@ -45,7 +45,7 @@
     <string name="drawer_view_item5">设置</string>
     <string name="drawer_view_other_item">Version 1.0.2</string>
     <string name="drawer_view_other_item1">欢迎使用</string>
-    <string name="drawer_view_other_item2">最日记</string>
+    <string name="drawer_view_other_item2">快日记</string>
     <string name="note_content_can_not_be_empty">日记内容不能为空！</string>
     <string name="note_dialog_item1">删除</string>
     <string name="note_dialog_item2">修改</string>
@@ -82,4 +82,13 @@
     <string name="share_day_card_count_title">%d条日记</string>
     <string name="already_copy_to_clip">已复制到剪贴板</string>
     <string name="about_us">关于我们</string>
+    <string name="about_fast_diary_tip1">快日记是一款快速写日记的极简工具，快日记的灵感来自于我们每天都会使用的聊天App，通过聊天的形式来记录日记，就像和未来的自己聊天一样，采用聊天的对话框，以文字、图片、语音为载体来快速记录下生活中的点滴，再以卡片的形式将每天的日记整理出来，以供查看、搜索，同时还可以将日记快速分享、导出到第三方平台。</string>
+    <string name="about_fast_diary_tip2">快日记整体采用material design风格设计，交互友好，界面美观，是极简主义的践行者。</string>
+    <string name="about_fast_diary_tip3">快日记的分享功能同时也是发长微博、长朋友圈的神器，快来试试吧！</string>
+    <string name="about_fast_diary_tip4">写给未来的自己！快日记！</string>
+    <string name="about_fast_diary_tip5">发长微博神器！快日记！</string>
+    <string name="about_fast_diary_tip6">极简日记本！</string>
+    <string name="about_fast_diary_tip7">Simple is cool! Fast is cool!</string>
+    <string name="about_fast_diary_tip8">用语音来快速记日记！</string>
+    <string name="about_fast_diary_tip9">快日记！极简主义者！</string>
 </resources>

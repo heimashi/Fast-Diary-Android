@@ -1,15 +1,22 @@
 package cn.swang.ui.view;
 
 import android.content.Context;
+import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.File;
+import java.io.IOException;
+
 import cn.swang.R;
+import cn.swang.app.GlobalData;
 import cn.swang.app.IConstants;
 import cn.swang.utils.AudioManager;
 import cn.swang.utils.RecordDialogManager;
@@ -19,9 +26,12 @@ import cn.swang.utils.RecordDialogManager;
  */
 public class AudioRecorderButton extends Button implements AudioManager.AudioStateListener{
 
+    //state
     private static final int STATE_NORMAL = 1;
     private static final int STATE_RECORDERING = 2;
     private static final int STATE_WANT_CANCEL = 3;
+
+    //distance
     private static final int DISTANCE_Y_CANCEL = 50;
 
 
@@ -36,7 +46,6 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
     public AudioRecorderButton(Context context) {
         this(context, null);
     }
-
     public AudioRecorderButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mRecordDialogManager = new RecordDialogManager(context);
@@ -47,11 +56,46 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mReady=true;
+                mReady = true;
                 mAudioManager.prepareAudio();
                 return false;
             }
         });
+
+    }
+
+    private static final String REQUEST_AUDIO_PERMISION = "request_audio";
+    private static final String REQUEST_AUDIO_PERMISION_IS_REQUEST = "request_audio_is_req";
+    public void prepare(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!GlobalData.app().getSharedPreferences(REQUEST_AUDIO_PERMISION,Context.MODE_PRIVATE).getBoolean(REQUEST_AUDIO_PERMISION_IS_REQUEST,false)){
+                    GlobalData.app().getSharedPreferences(REQUEST_AUDIO_PERMISION,Context.MODE_PRIVATE).edit().putBoolean(REQUEST_AUDIO_PERMISION_IS_REQUEST,true).commit();
+                    MediaRecorder recorder = new MediaRecorder();
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    recorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);
+                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                    File dir = new File(Environment.getExternalStorageDirectory()+ IConstants.AUDIO_RECORD_PATH);
+                    if(!dir.exists()){
+                        dir.mkdir();
+                    }
+                    File file = new File(dir,"test.amr");
+                    recorder.setOutputFile(file.getAbsolutePath());
+                    try {
+                        recorder.prepare();
+                        recorder.start();
+                        //Thread.sleep(500);
+                        recorder.stop();
+                        recorder.release();
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     public interface AudioFinishRecorderListener{
@@ -145,8 +189,14 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
                     mRecordDialogManager.dimissDialog();
                     mAudioManager.cancel();
                 }
+
                 reset();
                 break;
+            case MotionEvent.ACTION_CANCEL:
+                if(isRecording){
+                    mRecordDialogManager.dimissDialog();
+                    mAudioManager.cancel();
+                }
         }
 
         return super.onTouchEvent(event);

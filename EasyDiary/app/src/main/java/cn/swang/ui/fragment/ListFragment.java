@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -211,6 +212,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         audioChoiceBtn.setImageResource(R.drawable.text_img_bottom);
         mInputView.setVisibility(View.GONE);
         audioRecorderButton.setVisibility(View.VISIBLE);
+        audioRecorderButton.prepare();
     }
 
     private void setFabContainerComeIn() {

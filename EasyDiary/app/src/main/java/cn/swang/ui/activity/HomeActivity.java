@@ -1,5 +1,6 @@
 package cn.swang.ui.activity;
 
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -90,6 +91,13 @@ public class HomeActivity extends BaseActivity {
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager();
+
+    }
+
+    boolean checkAudioPermission(){
+        String permission = "android.permission.RECORD_AUDIO";
+        int res = this.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
