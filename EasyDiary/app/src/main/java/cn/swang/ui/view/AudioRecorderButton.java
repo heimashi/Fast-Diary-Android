@@ -85,7 +85,7 @@ public class AudioRecorderButton extends Button implements AudioManager.AudioSta
                     try {
                         recorder.prepare();
                         recorder.start();
-                        //Thread.sleep(500);
+                        Thread.sleep(500);
                         recorder.stop();
                         recorder.release();
                     } catch (IllegalStateException e) {

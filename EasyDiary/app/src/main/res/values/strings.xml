@@ -54,6 +54,7 @@
     <string name="note_dialog_item2">Modify</string>
     <string name="note_dialog_item3">Share</string>
     <string name="note_dialog_item4">Copy</string>
+    <string name="note_dialog_item5">Save to SDCard</string>
     <string name="share_day_card_title">Share Diary</string>
 
     <string name="feedback_tint">Welcome Feedback</string>

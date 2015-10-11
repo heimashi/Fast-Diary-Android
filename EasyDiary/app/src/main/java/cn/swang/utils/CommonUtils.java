@@ -13,6 +13,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -26,6 +30,38 @@ import cn.swang.app.GlobalData;
 
 
 public class CommonUtils {
+
+
+    public static void copyFile(String fromFilePath, String toFilePath) throws IOException {
+        File fromFile = new File(fromFilePath);
+        File toFile = new File(toFilePath);
+        copyFile(fromFile,toFile);
+    }
+
+    public static void copyFile(File fromFile, File toFile) throws IOException {
+        if (!fromFile.exists()||!fromFile.isFile()||!fromFile.canRead()) {
+            return;
+        }
+        if (!toFile.getParentFile().exists()) {
+            toFile.getParentFile().mkdirs();
+        }
+        if (toFile.exists()) {
+            toFile.delete();
+        }
+        try {
+            FileInputStream fosfrom = new FileInputStream(fromFile);
+            FileOutputStream fosto = new FileOutputStream(toFile);
+            byte bt[] = new byte[1024];
+            int c;
+            while ((c = fosfrom.read(bt)) > 0) {
+                fosto.write(bt, 0, c);
+            }
+            fosfrom.close();
+            fosto.close();
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 
     public static final String weeks[] = {GlobalData.app().getString(R.string.show_week7),
             GlobalData.app().getString(R.string.show_week1),

@@ -2,8 +2,10 @@ package cn.swang.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +13,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 import cn.swang.R;
 import cn.swang.app.GlobalData;
+import cn.swang.app.IConstants;
 import cn.swang.entity.DayCard;
+import cn.swang.entity.NoteCard;
 import cn.swang.ui.activity.ShareDayCardActivity;
+import cn.swang.utils.CommonUtils;
 import cn.swang.utils.ShareBitmapUtils;
 
 public class ExportRecylerViewAdapter extends RecyclerView.Adapter<ExportRecylerViewAdapter.ViewHolder> implements ShareBitmapUtils.ConvertDayCardListener{
@@ -67,7 +73,24 @@ public class ExportRecylerViewAdapter extends RecyclerView.Adapter<ExportRecyler
                     isGeneratingBitmap = true;
                     Snackbar.make(v, mContext.getString(R.string.detail_activity_generate_bitmap), Snackbar.LENGTH_SHORT).show();
                     ShareBitmapUtils bitmapUtils = new ShareBitmapUtils();
-                    bitmapUtils.convertDayCardBitmap(ExportRecylerViewAdapter.this, card);
+                    bitmapUtils.convertDayCardBitmap(ExportRecylerViewAdapter.this, card, true);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String fileOutPutPath = Environment.getExternalStorageDirectory()+ IConstants.SHARE_DIARY_LIST_PATH+card.getYear() + "_"+card.getMouth() + "_"+card.getDay()+"/";
+                            int count = 0;
+                            for(NoteCard noteCard:card.getNoteSet()){
+                                if(!TextUtils.isEmpty(noteCard.getVoicePath())){
+                                    count++;
+                                    try {
+                                        CommonUtils.copyFile(noteCard.getVoicePath(), fileOutPutPath+count+IConstants.AUDIO_RECORD_SUFFIX);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    }).start();
                 }
             }
         });

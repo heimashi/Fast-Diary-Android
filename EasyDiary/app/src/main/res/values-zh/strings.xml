@@ -51,6 +51,7 @@
     <string name="note_dialog_item2">修改</string>
     <string name="note_dialog_item3">分享</string>
     <string name="note_dialog_item4">复制</string>
+    <string name="note_dialog_item5">保存到SD卡</string>
 
     <string name="feedback_tint">欢迎吐槽</string>
 

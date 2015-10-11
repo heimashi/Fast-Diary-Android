@@ -64,7 +64,33 @@
                 android:onClick="click_confirm_fab"
                 android:src="@drawable/fab_share_button"
                 app:borderWidth="0dp"
-                app:fabSize="normal" />
+                app:fabSize="mini" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/drawer_view_item5"
+                android:textColor="@color/sr_color_primary"
+                android:textSize="12sp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/share_fab_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:clickable="true"
+                android:onClick="click_setting_fab"
+                android:src="@drawable/setting_fab_img"
+                app:borderWidth="0dp"
+                app:fabSize="mini" />
         </LinearLayout>
 
         <LinearLayout
@@ -90,7 +116,7 @@
                 android:onClick="click_cancel_fab"
                 android:src="@drawable/cancel_normal_light"
                 app:borderWidth="0dp"
-                app:fabSize="normal" />
+                app:fabSize="mini" />
         </LinearLayout>
     </LinearLayout>
 

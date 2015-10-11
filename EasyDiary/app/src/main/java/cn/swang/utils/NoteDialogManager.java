@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,11 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import cn.swang.R;
 import cn.swang.app.GlobalData;
+import cn.swang.app.IConstants;
 import cn.swang.dao.DbService;
 import cn.swang.entity.NoteCard;
 import cn.swang.ui.fragment.ListFragment;
@@ -41,8 +44,8 @@ public class NoteDialogManager {
     private MyDialog mDialog;
     private Context mContext;
     private String textDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1), GlobalData.app().getString(R.string.note_dialog_item2), GlobalData.app().getString(R.string.note_dialog_item3), GlobalData.app().getString(R.string.note_dialog_item4)};
-    private String photoDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1), GlobalData.app().getString(R.string.note_dialog_item3)};
-    private String audioDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1)};
+    private String photoDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1), GlobalData.app().getString(R.string.note_dialog_item3),GlobalData.app().getString(R.string.note_dialog_item5)};
+    private String audioDatas[] = {GlobalData.app().getString(R.string.note_dialog_item1),GlobalData.app().getString(R.string.note_dialog_item5)};
     public int DIALOG_STATE;
     private String datas[];
     private ListView mListView;
@@ -128,7 +131,27 @@ public class NoteDialogManager {
                     ClipboardManager clipboardManager =(ClipboardManager) GlobalData.app().getSystemService(Context.CLIPBOARD_SERVICE);
                     clipboardManager.setText(mNoteCard.getContent());
                     Toast.makeText(mContext,mContext.getString(R.string.already_copy_to_clip),Toast.LENGTH_SHORT).show();
-                    //Snackbar.make(mListView,mContext.getString(R.string.already_copy_to_clip),Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(,mContext.getString(R.string.already_copy_to_clip),Snackbar.LENGTH_SHORT).show();
+                } else if(select.equals(photoDatas[2])){
+                    if(DIALOG_STATE==PHOTO_DIALOG){
+                        File fromFile = new File(mNoteCard.getImgPath());
+                        File toFile = new File(Environment.getExternalStorageDirectory()+IConstants.SHARE_SAVE_PHOTO_PATH+fromFile.getName());
+                        try {
+                            CommonUtils.copyFile(fromFile, toFile);
+                            Toast.makeText(mContext,mContext.getString(R.string.already_save_to_title)+" "+toFile.getAbsolutePath(),Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }else if(DIALOG_STATE==AUDIO_DIALOG){
+                        File fromFile = new File(mNoteCard.getVoicePath());
+                        File toFile = new File(Environment.getExternalStorageDirectory()+IConstants.SHARE_SAVE_AUDIO_PATH+fromFile.getName());
+                        try {
+                            CommonUtils.copyFile(fromFile, toFile);
+                            Toast.makeText(mContext,mContext.getString(R.string.already_save_to_title)+" "+toFile.getAbsolutePath(),Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 dimissDialog();
             }

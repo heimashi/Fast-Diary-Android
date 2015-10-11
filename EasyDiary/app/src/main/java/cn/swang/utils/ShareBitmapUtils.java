@@ -39,8 +39,12 @@ import cn.swang.entity.NoteCard;
  */
 public class ShareBitmapUtils {
 
+    public void convertDayCardBitmap(ConvertDayCardListener listener, DayCard dayCard,boolean isExport) {
+        new ConvertDayCardAsyncTask(listener, dayCard,isExport).execute();
+    }
+
     public void convertDayCardBitmap(ConvertDayCardListener listener, DayCard dayCard) {
-        new ConvertDayCardAsyncTask(listener, dayCard).execute();
+        new ConvertDayCardAsyncTask(listener, dayCard,false).execute();
     }
 
     public interface ConvertDayCardListener {
@@ -50,15 +54,17 @@ public class ShareBitmapUtils {
     private class ConvertDayCardAsyncTask extends AsyncTask<Void, Void, String> {
         private ConvertDayCardListener listener;
         private DayCard dayCard;
+        private boolean isExport;
 
-        public ConvertDayCardAsyncTask(ConvertDayCardListener listener, DayCard dayCard) {
+        public ConvertDayCardAsyncTask(ConvertDayCardListener listener, DayCard dayCard, boolean isExport) {
             this.listener = listener;
             this.dayCard = dayCard;
+            this.isExport = isExport;
         }
 
         @Override
         protected String doInBackground(Void... params) {
-            return convertDayCardToBitmap(dayCard);
+            return convertDayCardToBitmap(dayCard,isExport);
         }
 
         @Override
@@ -109,7 +115,7 @@ public class ShareBitmapUtils {
     public static final String IS_SHOW_TITLE_DATE = "is_show_title_date_sp";
     public static final String IS_SHOW_END_TAG = "is_show_end_tag_sp";
 
-    public String convertDayCardToBitmap(DayCard dayCard) {
+    public String convertDayCardToBitmap(DayCard dayCard,boolean isExport) {
         HashMap<String, Bitmap> hashMap = new HashMap<String, Bitmap>();
         int bitmap_height = 185;//header+footer
         int bitmap_width = 600;
@@ -118,7 +124,7 @@ public class ShareBitmapUtils {
         int textHeight = 30;
         int bitmapMargin = 30;
         float bitmapRadio = 0.83f;
-        
+
         //caculate width height
         for (NoteCard noteCard : dayCard.getNoteSet()) {
             if (!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
@@ -142,7 +148,7 @@ public class ShareBitmapUtils {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
         paint.setTextSize(23.0f);
         canvas.drawColor(Color.WHITE);
-        int x = 50, y = 30;
+        int x = 50, y = 33;
 
         //draw title
         paint.setColor(Color.GRAY);
@@ -151,7 +157,7 @@ public class ShareBitmapUtils {
         if(sharedPreferences.getBoolean(IS_SHOW_TITLE_DATE,true)){
             canvas.drawText(title, bitmap_width - 140, y, paint);
         }
-        y += 15;
+        y += 12;
         canvas.drawLine(10, y, bitmap_width - 10, y + 1, paint);
         paint.setColor(Color.BLACK);
         y += 50;
@@ -187,7 +193,13 @@ public class ShareBitmapUtils {
 
         canvas.save(canvas.ALL_SAVE_FLAG);//保存所有图层
         canvas.restore();
-        File newFIle = new File(Environment.getExternalStorageDirectory() + IConstants.SHARE_PHOTO_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + ".jpg");
+        String filePath;
+        if(isExport){
+            filePath = Environment.getExternalStorageDirectory() + IConstants.SHARE_DIARY_LIST_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + "/"+dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay()+".jpg";
+        }else {
+            filePath = Environment.getExternalStorageDirectory() + IConstants.SHARE_PHOTO_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + ".jpg";
+        }
+        File newFIle = new File(filePath);
         newFIle.getParentFile().mkdir();
         saveBitmaptoFile(bitmap, newFIle.getAbsolutePath());
         return newFIle.getAbsolutePath();
