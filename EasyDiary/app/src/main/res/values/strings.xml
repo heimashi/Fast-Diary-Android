@@ -87,19 +87,31 @@
     <string name="already_copy_to_clip">copied!</string>
     <string name="about_us">About Us</string>
 
-    <string name="about_fast_diary_tip1">快日记是一款快速写日记的极简工具，快日记的灵感来自于我们每天都会使用的聊天App，通过聊天的形式来记录日记，就像和未来的自己聊天一样，采用聊天的对话框，以文字、图片、语音为载体来快速记录下生活中的点滴，再以卡片的形式将每天的日记整理出来，以供查看、搜索，同时还可以将日记快速分享、导出到第三方平台。</string>
-    <string name="about_fast_diary_tip2">快日记整体采用material design风格设计，交互友好，界面美观，是极简主义的践行者。</string>
-    <string name="about_fast_diary_tip3">快日记的分享功能同时也是发长微博、长朋友圈的神器，快来试试吧！</string>
-    <string name="about_fast_diary_tip4">写给未来的自己！快日记！</string>
-    <string name="about_fast_diary_tip5">发长微博神器！快日记！</string>
-    <string name="about_fast_diary_tip6">极简日记本！</string>
+    <string name="about_fast_diary_tip2">Fast Diary overall use of material design style design, interactive and friendly, attractive interface</string>
+    <string name="about_fast_diary_tip5">Long microblogging! Fast Diary!</string>
+    <string name="about_fast_diary_tip6">Minimalist diary!</string>
     <string name="about_fast_diary_tip7">Simple is cool! Fast is cool!</string>
-    <string name="about_fast_diary_tip8">用语音来快速记日记！</string>
-    <string name="about_fast_diary_tip9">快日记！极简主义者！</string>
 
     <string-array name="list_preference">
         <item>Red</item>
         <item>Blue</item>
         <item>Green</item>
     </string-array>
+    <string name="about_convert_diary_tips">Convert failed! Please refine your picture in settings and try again!</string>
+    <string name="about_fast_diary_tip1">Fast Diary is a tool for writing diary faster. Fast diary inspired by the Chat App we use every day, through chat form to record a diary, it's like chat with yourself in the future. using chat dialog with text, images, voice to quickly record the life bit by bit. Then sorted out the diaries in the form of cards for viewing, searching, and also can quickly share diary export to third-party platform.</string>
+    <string name="about_fast_diary_tip3">Fast Diary can easily to write long microblogging!</string>
+    <string name="about_fast_diary_tip4">Write for the future!Fast Diary!</string>
+    <string name="about_fast_diary_tip8">With a voice to quickly keep a diary!</string>
+    <string name="about_fast_diary_tip9">Fast Diary! Enjoy yourself!</string>
+    <string name="about_show_diary_tips">Picture is too long, when the display has been compressed, the original share no compression</string>
+    <string name="settings_is_not_showing">OFF</string>
+    <string name="settings_is_showing">ON</string>
+    <string name="settings_share_picture_add_title">Add Sharing Title</string>
+    <string name="settings_share_picture_add_title_hint">Please input the title</string>
+    <string name="settings_share_picture_size_tips">Select the size of images</string>
+    <string name="settings_share_picture_swith_app_name">Show Fast Diary when sharing</string>
+    <string name="settings_share_picture_swith_app_name_tips">whether show the footer(Fast Diary)</string>
+    <string name="settings_share_picture_swith_date_title">Show date when sharing</string>
+    <string name="settings_share_picture_swith_date_title_tips">whether display date on top right corner</string>
+    <string name="tb_munion_tip_download_prefix">loading:</string>
 </resources>

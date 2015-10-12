@@ -103,4 +103,10 @@
     <string name="about_fast_diary_tip9">快日记！极简主义者！</string>
 
     <string name="about_convert_diary_tips">日记转换成图片失败！可能是日记中图片太多，请在设置中缩小图片的显示后重试！</string>
+    <string name="about_show_diary_tips">图片过长，显示的时候已进行压缩，分享的原图没有压缩，仍以高质量图片发送</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_settings1">Settings</string>
+    <string name="action_settings2">Settings</string>
+    <string name="tb_munion_tip_download_prefix">正在下载:</string>
+    <string name="umeng_common_icon">icon</string>
 </resources>

@@ -48,6 +48,7 @@ import cn.swang.dao.NoteCardDao;
 import cn.swang.entity.DayCard;
 import cn.swang.entity.NoteCard;
 import cn.swang.ui.activity.LongDiaryActivity;
+import cn.swang.ui.activity.ShareDayCardActivity;
 import cn.swang.ui.adapter.RecyclerViewAdapter;
 import cn.swang.ui.base.BaseFragment;
 import cn.swang.ui.view.AudioRecorderButton;
@@ -55,8 +56,9 @@ import cn.swang.ui.view.MyDialog;
 import cn.swang.utils.CommonUtils;
 import cn.swang.utils.MediaManager;
 import cn.swang.utils.NoteDialogManager;
+import cn.swang.utils.ShareBitmapUtils;
 
-public class ListFragment extends BaseFragment implements NoteDialogManager.NoteDialogHandle, MyDialog.DialogDismissCallBack, DbService.LoadTodayNoteListener, View.OnClickListener, RecyclerViewAdapter.OnItemLongClickListener {
+public class ListFragment extends BaseFragment implements ShareBitmapUtils.ConvertDayCardListener,NoteDialogManager.NoteDialogHandle, MyDialog.DialogDismissCallBack, DbService.LoadTodayNoteListener, View.OnClickListener, RecyclerViewAdapter.OnItemLongClickListener {
 
 
     private static final int REQUEST_CODE_PICK_IMAGE = 1000;
@@ -75,7 +77,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
     private TextView mSentTv;
     private File cameraFile;
     private DayCard mdayCard;
-    private FloatingActionButton mFab1, mFab2, mFab3;
+    private FloatingActionButton mFab0,mFab1, mFab2, mFab3;
     private ImageView audioChoiceBtn;
     private FrameLayout fabContainer;
     private AudioRecorderButton audioRecorderButton;
@@ -92,6 +94,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         mEmptyView = (LinearLayout)mLinearLayout.findViewById(R.id.list_empty_view);
         mInputView = (TextInputLayout) mLinearLayout.findViewById(R.id.input_layout);
         fabContainer = (FrameLayout) mLinearLayout.findViewById(R.id.other_btn_view);
+        mFab0 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab0);
         mFab1 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab1);
         mFab2 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab2);
         mFab3 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab3);
@@ -128,6 +131,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         audioChoiceBtn.setOnClickListener(this);
         mSentTv.setOnClickListener(this);
         mSentBtn.setOnClickListener(this);
+        mFab0.setOnClickListener(this);
         mFab1.setOnClickListener(this);
         mFab2.setOnClickListener(this);
         mFab3.setOnClickListener(this);
@@ -406,6 +410,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         }else{
             mEmptyView.setVisibility(View.GONE);
         }
+        mdayCard.setNoteSet(list);
         datas.clear();
         for (NoteCard noteCard : list) {
             datas.add(new RecyclerViewAdapter.NoteCardWrapper(noteCard));
@@ -436,6 +441,7 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         }
     }
 
+    boolean isGeneratingBitmap = false;
 
     @Override
     public void onClick(View v) {
@@ -450,6 +456,14 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
                     setFabContainerOut();
                 } else {
                     setFabContainerComeIn();
+                }
+                break;
+            case R.id.list_fab0:
+                if (!isGeneratingBitmap) {
+                    isGeneratingBitmap = true;
+                    Toast.makeText(getContext(), getString(R.string.detail_activity_generate_bitmap), Toast.LENGTH_SHORT).show();
+                    ShareBitmapUtils bitmapUtils = new ShareBitmapUtils();
+                    bitmapUtils.convertDayCardBitmap(this, mdayCard);
                 }
                 break;
             case R.id.list_fab1:
@@ -493,5 +507,14 @@ public class ListFragment extends BaseFragment implements NoteDialogManager.Note
         Intent intent = new Intent(getActivity(), LongDiaryActivity.class);
         intent.putExtra(LongDiaryActivity.UPDATE_DIARY_EXTRA_STRING, noteCard);
         startActivityForResult(intent, REQUEST_CODE_UPDATE_DIARY);
+    }
+
+    @Override
+    public void onConvertSuccess(String imagePath, DayCard dayCard) {
+        isGeneratingBitmap = false;
+        Intent intent = new Intent(getContext(), ShareDayCardActivity.class);
+        intent.putExtra(ShareDayCardActivity.SHARE_IMAGE_PATH, imagePath);
+        intent.putExtra(ShareDayCardActivity.SHARE_DAYCARD_PRE, dayCard);
+        getContext().startActivity(intent);
     }
 }

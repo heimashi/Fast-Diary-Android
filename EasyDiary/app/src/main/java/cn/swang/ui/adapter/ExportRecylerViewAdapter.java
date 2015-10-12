@@ -104,7 +104,7 @@ public class ExportRecylerViewAdapter extends RecyclerView.Adapter<ExportRecyler
     }
 
     @Override
-    public void onConvertSuccess(String imagePath) {
+    public void onConvertSuccess(String imagePath, DayCard dayCard) {
         isGeneratingBitmap = false;
         //Toast.makeText(mContext,mContext.getString(R.string.already_save_to_title)+imagePath,Toast.LENGTH_LONG).show();
         Snackbar.make(cacheView, mContext.getString(R.string.already_save_to_title)+imagePath, Snackbar.LENGTH_LONG).show();

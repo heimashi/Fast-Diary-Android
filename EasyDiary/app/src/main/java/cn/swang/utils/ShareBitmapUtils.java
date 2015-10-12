@@ -50,7 +50,7 @@ public class ShareBitmapUtils {
     }
 
     public interface ConvertDayCardListener {
-        void onConvertSuccess(String imagePath);
+        void onConvertSuccess(String imagePath, DayCard dayCard);
     }
 
     private class ConvertDayCardAsyncTask extends AsyncTask<Void, Void, String> {
@@ -73,7 +73,7 @@ public class ShareBitmapUtils {
         protected void onPostExecute(String bitmap) {
             super.onPostExecute(bitmap);
             if (listener != null) {
-                listener.onConvertSuccess(bitmap);
+                listener.onConvertSuccess(bitmap,dayCard);
             }
             ;
         }
@@ -117,6 +117,7 @@ public class ShareBitmapUtils {
     public static final String IS_SHOW_TITLE_DATE = "is_show_title_date_sp";
     public static final String IS_SHOW_END_TAG = "is_show_end_tag_sp";
     public static final String SHOW_IMAGE_SIZE = "show_image_size";
+    public static final String SHOW_TITLE_STRING = "show_title_string";
 
     public int calculateInSampleSize(BitmapFactory.Options options,
                                             int reqWidth, int reqHeight) {
@@ -155,6 +156,7 @@ public class ShareBitmapUtils {
         //HashMap<String,WeakReference<Bitmap>> hashMap = new HashMap<String,WeakReference<Bitmap>>();
         HashMap<String,Bitmap> hashMap = new HashMap<String,Bitmap>();
         int bitmap_height = 182;//header+footer
+        int title_height = 45;
         int bitmap_width = 600;
         int img_width = 500;
         int img_height = 500;
@@ -166,12 +168,17 @@ public class ShareBitmapUtils {
 
         try{
             SharedPreferences sharedPreferences = GlobalData.app().getSharedPreferences(SHARE_DIARY_SHARE_PREFERENCE, Context.MODE_PRIVATE);
-            float img_size = sharedPreferences.getFloat(ShareBitmapUtils.SHOW_IMAGE_SIZE, 100f);
+            float img_size = sharedPreferences.getFloat(SHOW_IMAGE_SIZE, 100f);
+            String titleInput = sharedPreferences.getString(SHOW_TITLE_STRING, "");
+            boolean isShowTitle = !TextUtils.isEmpty(titleInput);
             bitmapRadio *= (img_size / 100f);
             img_height*=(img_size/100f);
             img_width*=(img_size/100f);
 
             //caculate width height
+            if(isShowTitle){
+                bitmap_height+=title_height;
+            }
             for (NoteCard noteCard : dayCard.getNoteSet()) {
                 if (!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
                 bitmap_height += noteMargin;
@@ -187,7 +194,6 @@ public class ShareBitmapUtils {
                         mbitmap = zoomImage(mbitmap, bitmap_width * bitmapRadio, height);
                     }
                     bitmap_height += (mbitmap.getHeight() + bitmapMargin);
-
                     hashMap.put(key, mbitmap);
                 }
             }
@@ -198,7 +204,7 @@ public class ShareBitmapUtils {
             canvas.drawColor(Color.WHITE);
             int x = 50, y = 33;
 
-            //draw title
+            //draw start
             paint.setColor(Color.GRAY);
             String title = dayCard.getYear() + "/" + dayCard.getMouth() + "/" + dayCard.getDay();
             if (sharedPreferences.getBoolean(IS_SHOW_TITLE_DATE, true)) {
@@ -208,6 +214,17 @@ public class ShareBitmapUtils {
             canvas.drawLine(10, y, bitmap_width - 10, y + 1, paint);
             paint.setColor(Color.BLACK);
             y += 50;
+
+            //draw title
+            if(isShowTitle){
+                Paint titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
+                titlePaint.setTextSize(34.0f);
+                titlePaint.setColor(Color.GRAY);
+                titlePaint.setTextAlign(Paint.Align.CENTER);
+                canvas.drawText(titleInput, bitmap_width/2, y, titlePaint);
+                y+=title_height;
+                sharedPreferences.edit().putString(SHOW_TITLE_STRING,"").commit();
+            }
 
             //y=95
             for (NoteCard noteCard : dayCard.getNoteSet()) {

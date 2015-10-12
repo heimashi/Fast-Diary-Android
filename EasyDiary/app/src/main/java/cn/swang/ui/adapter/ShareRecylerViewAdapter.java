@@ -75,10 +75,11 @@ public class ShareRecylerViewAdapter extends RecyclerView.Adapter<ShareRecylerVi
     }
 
     @Override
-    public void onConvertSuccess(String imagePath) {
+    public void onConvertSuccess(String imagePath, DayCard dayCard) {
         isGeneratingBitmap = false;
         Intent intent = new Intent(mContext, ShareDayCardActivity.class);
         intent.putExtra(ShareDayCardActivity.SHARE_IMAGE_PATH, imagePath);
+        intent.putExtra(ShareDayCardActivity.SHARE_DAYCARD_PRE, dayCard);
         mContext.startActivity(intent);
     }
 

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -26,6 +27,7 @@ import java.io.File;
 
 import cn.swang.R;
 import cn.swang.app.GlobalData;
+import cn.swang.entity.DayCard;
 import cn.swang.ui.base.BaseActivity;
 import cn.swang.utils.ImageLoaderHelper;
 import cn.swang.utils.ShareBitmapUtils;
@@ -33,13 +35,16 @@ import cn.swang.utils.ShareBitmapUtils;
 /**
  * Created by sw on 2015/9/13.
  */
-public class ShareDayCardActivity extends BaseActivity {
+public class ShareDayCardActivity extends BaseActivity implements ShareBitmapUtils.ConvertDayCardListener{
 
     public static final String SHARE_IMAGE_PATH = "share_image_path";
+    public static final String SHARE_DAYCARD_PRE = "share_daycard_pre";
     private ImageView mImageView;
     private ScrollView mScrollView;
     private LinearLayout mBottomView;
     private String imageUrl;
+    private DayCard mDayCard;
+
     Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -64,6 +69,7 @@ public class ShareDayCardActivity extends BaseActivity {
             finish();
             return;
         }
+        mDayCard = (DayCard)getIntent().getSerializableExtra(SHARE_DAYCARD_PRE);
         //String url=ImageDownloader.Scheme.FILE.wrap(imageUrl);
         //ImageLoader.getInstance().displayImage(url, mImageView);
 
@@ -81,8 +87,8 @@ public class ShareDayCardActivity extends BaseActivity {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
-        if(height>3000){
-            Toast.makeText(this,getString(R.string.about_fast_diary_tip1),Toast.LENGTH_SHORT).show();
+        if(height>6000){
+            Toast.makeText(this,getString(R.string.about_show_diary_tips),Toast.LENGTH_LONG).show();
         }
         int inSampleSize = 1;
         if (height > reqHeight || width > reqWidth) {
@@ -127,8 +133,23 @@ public class ShareDayCardActivity extends BaseActivity {
 
     public void click_setting_fab(View v){
         Intent intent = new Intent(this,SettingsActivity.class);
-        startActivityForResult(intent,SHARE_SETTING_REQUEST_CODE);
+        startActivityForResult(intent, SHARE_SETTING_REQUEST_CODE);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            if(requestCode==SHARE_SETTING_REQUEST_CODE){
+                //Snackbar.make(mImageView, getString(R.string.detail_activity_generate_bitmap), Snackbar.LENGTH_SHORT).show();
+                mImageView.setImageResource(R.drawable.image_loading);
+                Toast.makeText(this, getString(R.string.detail_activity_generate_bitmap), Toast.LENGTH_SHORT).show();
+                ShareBitmapUtils bitmapUtils = new ShareBitmapUtils();
+                bitmapUtils.convertDayCardBitmap(this, mDayCard);
+            }
+        }
+    }
+
     public void click_cancel_fab(View v){
         finish();
     }
@@ -163,4 +184,22 @@ public class ShareDayCardActivity extends BaseActivity {
         return false;
     }
 
+    @Override
+    public void onConvertSuccess(String imagePath, DayCard dayCard) {
+        //Intent intent = new Intent(this, ShareDayCardActivity.class);
+        //intent.putExtra(ShareDayCardActivity.SHARE_IMAGE_PATH, imagePath);
+        //intent.putExtra(ShareDayCardActivity.SHARE_DAYCARD_PRE, dayCard);
+        //startActivity(intent);
+        //finish();
+        imageUrl = imagePath;
+        if (TextUtils.isEmpty(imageUrl)) {
+            finish();
+            return;
+        }
+        //max=4096*4096
+        int imgMaxWidth = 600;
+        int imgMaxHeight = 4000;
+        Bitmap bitmap=decodeSampledBitmapFromFile(imageUrl, 600, 3000);
+        mImageView.setImageBitmap(bitmap);
+    }
 }

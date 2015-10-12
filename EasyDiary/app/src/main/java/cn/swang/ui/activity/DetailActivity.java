@@ -197,10 +197,11 @@ public class DetailActivity extends BaseActivity implements DbService.LoadDayCar
     }
 
     @Override
-    public void onConvertSuccess(String imgPath) {
+    public void onConvertSuccess(String imgPath,DayCard dayCard) {
         isGeneratingBitmap = false;
         Intent intent = new Intent(this, ShareDayCardActivity.class);
         intent.putExtra(ShareDayCardActivity.SHARE_IMAGE_PATH, imgPath);
+        intent.putExtra(ShareDayCardActivity.SHARE_DAYCARD_PRE, dayCard);
         startActivity(intent);
     }
 

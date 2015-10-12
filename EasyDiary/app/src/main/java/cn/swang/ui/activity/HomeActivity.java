@@ -1,5 +1,6 @@
 package cn.swang.ui.activity;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -169,7 +170,9 @@ public class HomeActivity extends BaseActivity {
                                 startActivityByMyself(FeedbackActivity.class,false);
                                 break;
                             case R.id.nav_about_us:
-                                startActivityByMyself(AboutUsActivity.class,false);
+                                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
+                                intent.putExtra(SettingsActivity.IS_FROM_HOME_EXTRA,true);
+                                startActivity(intent);
                                 break;
                         }
                         menuItem.setChecked(false);

@@ -34,6 +34,7 @@
         android:background="@color/sr_color_primary" />
 
     <TextView
+        android:id="@+id/setting_add_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -45,6 +46,7 @@
         android:textSize="18sp" />
 
     <LinearLayout
+        android:id="@+id/setting_add_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -68,7 +70,7 @@
                 android:hint="@string/settings_share_picture_add_title"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@color/sr_color_primary" />
+                android:textColor="@color/alpha_80_black" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -206,7 +208,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginRight="5dp"
             android:text="@string/settings_share_picture_size_tips"
             android:textColor="@color/alpha_50_sr_color_primary"
@@ -225,5 +227,49 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.66dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/alpha_30_sr_color_primary" />
+
+    <TextView
+        android:id="@+id/id_about_us_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="start"
+        android:visibility="gone"
+        android:text="@string/about_us"
+        android:textColor="@color/sr_color_primary"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/id_about_us_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/about_us_tv"
+            android:text="@string/about_fast_diary_tip1"
+            android:textColor="@color/alpha_50_sr_color_primary"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:textSize="13sp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
 
 </LinearLayout>
