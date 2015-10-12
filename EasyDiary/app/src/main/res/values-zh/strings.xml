@@ -64,7 +64,16 @@
     <string name="show_week7">星期日</string>
 
     <string name="settings_share">分享设置</string>
+    <string name="settings_is_showing">显示</string>
+    <string name="settings_is_not_showing">不显示</string>
+    <string name="settings_share_picture_add_title">添加分享的标题</string>
+    <string name="settings_share_picture_add_title_hint">请输入标题</string>
+    <string name="settings_share_picture_swith_date_title">分享日期显示</string>
+    <string name="settings_share_picture_swith_app_name">分享时快日记显示</string>
     <string name="settings_share_picture_size">分享时图片大小</string>
+    <string name="settings_share_picture_swith_date_title_tips">是否显示右上角日期</string>
+    <string name="settings_share_picture_swith_app_name_tips">是否显示页脚的快日记</string>
+    <string name="settings_share_picture_size_tips">选择图片大小</string>
 
     <string name="dialog_fragment_take_photo">拍照</string>
     <string name="dialog_fragment_gallery">相册</string>
@@ -92,4 +101,6 @@
     <string name="about_fast_diary_tip7">Simple is cool! Fast is cool!</string>
     <string name="about_fast_diary_tip8">用语音来快速记日记！</string>
     <string name="about_fast_diary_tip9">快日记！极简主义者！</string>
+
+    <string name="about_convert_diary_tips">日记转换成图片失败！可能是日记中图片太多，请在设置中缩小图片的显示后重试！</string>
 </resources>

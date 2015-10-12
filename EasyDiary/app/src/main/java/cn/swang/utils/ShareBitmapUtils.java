@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,12 +41,12 @@ import cn.swang.entity.NoteCard;
  */
 public class ShareBitmapUtils {
 
-    public void convertDayCardBitmap(ConvertDayCardListener listener, DayCard dayCard,boolean isExport) {
-        new ConvertDayCardAsyncTask(listener, dayCard,isExport).execute();
+    public void convertDayCardBitmap(ConvertDayCardListener listener, DayCard dayCard, boolean isExport) {
+        new ConvertDayCardAsyncTask(listener, dayCard, isExport).execute();
     }
 
     public void convertDayCardBitmap(ConvertDayCardListener listener, DayCard dayCard) {
-        new ConvertDayCardAsyncTask(listener, dayCard,false).execute();
+        new ConvertDayCardAsyncTask(listener, dayCard, false).execute();
     }
 
     public interface ConvertDayCardListener {
@@ -64,7 +66,7 @@ public class ShareBitmapUtils {
 
         @Override
         protected String doInBackground(Void... params) {
-            return convertDayCardToBitmap(dayCard,isExport);
+            return convertDayCardToBitmap(dayCard, isExport);
         }
 
         @Override
@@ -93,10 +95,10 @@ public class ShareBitmapUtils {
         int length = textWordCount * 2;
         for (int i = k; i < text.length(); i++) {
             String ch = text.substring(i, i + 1);
-            if (ch.matches(english)||ch.matches(sign)) {
-                length --;
+            if (ch.matches(english) || ch.matches(sign)) {
+                length--;
             } else {
-                length-=2;
+                length -= 2;
             }
             if (length <= 1) {
                 String tmp = text.substring(k, i);
@@ -114,95 +116,155 @@ public class ShareBitmapUtils {
     public static final String SHARE_DIARY_SHARE_PREFERENCE = "share_diary_sp";
     public static final String IS_SHOW_TITLE_DATE = "is_show_title_date_sp";
     public static final String IS_SHOW_END_TAG = "is_show_end_tag_sp";
+    public static final String SHOW_IMAGE_SIZE = "show_image_size";
 
-    public String convertDayCardToBitmap(DayCard dayCard,boolean isExport) {
-        HashMap<String, Bitmap> hashMap = new HashMap<String, Bitmap>();
-        int bitmap_height = 185;//header+footer
+    public int calculateInSampleSize(BitmapFactory.Options options,
+                                            int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            if (width > height) {
+                inSampleSize =(int) Math.round((float) height / (float) reqHeight);
+            } else {
+                inSampleSize = (int) Math.round((float) width / (float) reqWidth);
+            }
+//            double a= Math.ceil((float) height / (float) reqHeight);;
+        }
+        return inSampleSize;
+    }
+
+    public Bitmap decodeSampledBitmapFromFile(String filename,
+                                                     int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filename, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filename, options);
+    }
+
+    public String convertDayCardToBitmap(DayCard dayCard, boolean isExport) {
+        //HashMap<String,WeakReference<Bitmap>> hashMap = new HashMap<String,WeakReference<Bitmap>>();
+        HashMap<String,Bitmap> hashMap = new HashMap<String,Bitmap>();
+        int bitmap_height = 182;//header+footer
         int bitmap_width = 600;
+        int img_width = 500;
+        int img_height = 500;
         int textWordCount = 22;
         int noteMargin = 18;
         int textHeight = 30;
-        int bitmapMargin = 30;
+        int bitmapMargin = 22;//30;
         float bitmapRadio = 0.83f;
 
-        //caculate width height
-        for (NoteCard noteCard : dayCard.getNoteSet()) {
-            if (!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
-            bitmap_height += noteMargin;
-            if (!TextUtils.isEmpty(noteCard.getContent())) {
-                //bitmap_height+=Math.ceil(noteCard.getContent().length() * 1.0 / textWordCount)*textHeight;
-                bitmap_height += contentConvertArray(noteCard.getContent(), textWordCount).size() * textHeight;
-            } else if (!TextUtils.isEmpty(noteCard.getImgPath())) {
-                final String key = noteCard.getImgPath();
-                Bitmap mbitmap = BitmapFactory.decodeFile(noteCard.getImgPath());
-                if (mbitmap.getWidth() > bitmap_width) {
-                    int height = (int) ((mbitmap.getHeight() * bitmap_width / mbitmap.getWidth()) * bitmapRadio);
-                    mbitmap = zoomImage(mbitmap, bitmap_width * bitmapRadio, height);
+        try{
+            SharedPreferences sharedPreferences = GlobalData.app().getSharedPreferences(SHARE_DIARY_SHARE_PREFERENCE, Context.MODE_PRIVATE);
+            float img_size = sharedPreferences.getFloat(ShareBitmapUtils.SHOW_IMAGE_SIZE, 100f);
+            bitmapRadio *= (img_size / 100f);
+            img_height*=(img_size/100f);
+            img_width*=(img_size/100f);
+
+            //caculate width height
+            for (NoteCard noteCard : dayCard.getNoteSet()) {
+                if (!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
+                bitmap_height += noteMargin;
+                if (!TextUtils.isEmpty(noteCard.getContent())) {
+                    //bitmap_height+=Math.ceil(noteCard.getContent().length() * 1.0 / textWordCount)*textHeight;
+                    bitmap_height += contentConvertArray(noteCard.getContent(), textWordCount).size() * textHeight;
+                } else if (!TextUtils.isEmpty(noteCard.getImgPath())) {
+                    final String key = noteCard.getImgPath();
+                    //Bitmap mbitmap = BitmapFactory.decodeFile(noteCard.getImgPath());
+                    Bitmap mbitmap = decodeSampledBitmapFromFile(noteCard.getImgPath(),img_width,img_height);
+                    if (mbitmap.getWidth() > bitmap_width*bitmapRadio) {
+                        int height = (int) ((mbitmap.getHeight() * bitmap_width / mbitmap.getWidth()) * bitmapRadio);
+                        mbitmap = zoomImage(mbitmap, bitmap_width * bitmapRadio, height);
+                    }
+                    bitmap_height += (mbitmap.getHeight() + bitmapMargin);
+
+                    hashMap.put(key, mbitmap);
                 }
-                bitmap_height += (mbitmap.getHeight() + bitmapMargin);
-                hashMap.put(key, mbitmap);
             }
-        }
-        Bitmap bitmap = Bitmap.createBitmap(bitmap_width, bitmap_height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
-        paint.setTextSize(23.0f);
-        canvas.drawColor(Color.WHITE);
-        int x = 50, y = 33;
+            Bitmap bitmap = Bitmap.createBitmap(bitmap_width, bitmap_height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);
+            paint.setTextSize(23.0f);
+            canvas.drawColor(Color.WHITE);
+            int x = 50, y = 33;
 
-        //draw title
-        paint.setColor(Color.GRAY);
-        SharedPreferences sharedPreferences = GlobalData.app().getSharedPreferences(SHARE_DIARY_SHARE_PREFERENCE, Context.MODE_PRIVATE);
-        String title = dayCard.getYear() + "/" + dayCard.getMouth() + "/" + dayCard.getDay();
-        if(sharedPreferences.getBoolean(IS_SHOW_TITLE_DATE,true)){
-            canvas.drawText(title, bitmap_width - 140, y, paint);
-        }
-        y += 12;
-        canvas.drawLine(10, y, bitmap_width - 10, y + 1, paint);
-        paint.setColor(Color.BLACK);
-        y += 50;
+            //draw title
+            paint.setColor(Color.GRAY);
+            String title = dayCard.getYear() + "/" + dayCard.getMouth() + "/" + dayCard.getDay();
+            if (sharedPreferences.getBoolean(IS_SHOW_TITLE_DATE, true)) {
+                canvas.drawText(title, bitmap_width - 140, y, paint);
+            }
+            y += 12;
+            canvas.drawLine(10, y, bitmap_width - 10, y + 1, paint);
+            paint.setColor(Color.BLACK);
+            y += 50;
 
-        //y=95
-        for (NoteCard noteCard : dayCard.getNoteSet()) {
-            if (!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
-            y += noteMargin;
-            if (!TextUtils.isEmpty(noteCard.getContent())) {
-                //draw text
-                ArrayList<String> arrayList = contentConvertArray(noteCard.getContent(), textWordCount);
-                for (String tmp : arrayList) {
-                    canvas.drawText(tmp, x, y, paint);
-                    y += textHeight;
+            //y=95
+            for (NoteCard noteCard : dayCard.getNoteSet()) {
+                if (!TextUtils.isEmpty(noteCard.getVoicePath())) continue;
+                y += noteMargin;
+                if (!TextUtils.isEmpty(noteCard.getContent())) {
+                    //draw text
+                    ArrayList<String> arrayList = contentConvertArray(noteCard.getContent(), textWordCount);
+                    for (String tmp : arrayList) {
+                        canvas.drawText(tmp, x, y, paint);
+                        y += textHeight;
+                    }
+                } else if (!TextUtils.isEmpty(noteCard.getImgPath())) {
+                    //draw bitmap
+//                WeakReference<Bitmap> reference= hashMap.get(noteCard.getImgPath());
+//                Bitmap tmpBitmap;
+//                if(reference.get()!=null){
+//                    tmpBitmap=reference.get();
+//                }else {
+//                    tmpBitmap = decodeSampledBitmapFromFile(noteCard.getImgPath(),img_width,img_height);
+//                }
+                    Bitmap tmpBitmap=hashMap.get(noteCard.getImgPath());
+                    canvas.drawBitmap(tmpBitmap, x, y, paint);
+                    y += (tmpBitmap.getHeight() + bitmapMargin);
                 }
-            } else if (!TextUtils.isEmpty(noteCard.getImgPath())) {
-                //draw bitmap
-                canvas.drawBitmap(hashMap.get(noteCard.getImgPath()), x, y, paint);
-                y += (hashMap.get(noteCard.getImgPath()).getHeight() + bitmapMargin);
             }
-        }
 
-        //draw end sign
-        y += 40;
-        paint.setColor(Color.GRAY);
-        canvas.drawLine(10, y, bitmap_width - 10, y + 1, paint);
-        y += 30;
-        String endSign = GlobalData.app().getString(R.string.app_name);
-        paint.setTextAlign(Paint.Align.CENTER);
-        if(sharedPreferences.getBoolean(IS_SHOW_END_TAG,true)){
-            canvas.drawText(endSign, 300, y, paint);
-        }
+            //draw end sign
+            y += 40;
+            paint.setColor(Color.GRAY);
+            canvas.drawLine(10, y, bitmap_width - 10, y + 1, paint);
+            y += 30;
+            String endSign = GlobalData.app().getString(R.string.app_name);
+            paint.setTextAlign(Paint.Align.CENTER);
+            if (sharedPreferences.getBoolean(IS_SHOW_END_TAG, true)) {
+                canvas.drawText(endSign, 300, y, paint);
+            }
 
-        canvas.save(canvas.ALL_SAVE_FLAG);//保存所有图层
-        canvas.restore();
-        String filePath;
-        if(isExport){
-            filePath = Environment.getExternalStorageDirectory() + IConstants.SHARE_DIARY_LIST_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + "/"+dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay()+".jpg";
-        }else {
-            filePath = Environment.getExternalStorageDirectory() + IConstants.SHARE_PHOTO_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + ".jpg";
+            canvas.save(canvas.ALL_SAVE_FLAG);//保存所有图层
+            canvas.restore();
+            String filePath;
+            if (isExport) {
+                filePath = Environment.getExternalStorageDirectory() + IConstants.SHARE_DIARY_LIST_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + "/" + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + ".jpg";
+            } else {
+                filePath = Environment.getExternalStorageDirectory() + IConstants.SHARE_PHOTO_PATH + dayCard.getYear() + "_" + dayCard.getMouth() + "_" + dayCard.getDay() + ".jpg";
+            }
+            File newFIle = new File(filePath);
+            if (!newFIle.getParentFile().exists()) {
+                newFIle.getParentFile().mkdirs();
+            }
+            saveBitmaptoFile(bitmap, newFIle.getAbsolutePath());
+            return newFIle.getAbsolutePath();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(GlobalData.app(),GlobalData.app().getString(R.string.about_convert_diary_tips),Toast.LENGTH_SHORT).show();
         }
-        File newFIle = new File(filePath);
-        newFIle.getParentFile().mkdir();
-        saveBitmaptoFile(bitmap, newFIle.getAbsolutePath());
-        return newFIle.getAbsolutePath();
+        return "";
     }
 
     public Bitmap zoomImage(Bitmap bgimage, double newWidth,

@@ -96,4 +96,10 @@
     <string name="about_fast_diary_tip7">Simple is cool! Fast is cool!</string>
     <string name="about_fast_diary_tip8">用语音来快速记日记！</string>
     <string name="about_fast_diary_tip9">快日记！极简主义者！</string>
+
+    <string-array name="list_preference">
+        <item>Red</item>
+        <item>Blue</item>
+        <item>Green</item>
+    </string-array>
 </resources>

@@ -1,6 +1,7 @@
 package cn.swang.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -26,6 +28,7 @@ import cn.swang.R;
 import cn.swang.app.GlobalData;
 import cn.swang.ui.base.BaseActivity;
 import cn.swang.utils.ImageLoaderHelper;
+import cn.swang.utils.ShareBitmapUtils;
 
 /**
  * Created by sw on 2015/9/13.
@@ -63,9 +66,47 @@ public class ShareDayCardActivity extends BaseActivity {
         }
         //String url=ImageDownloader.Scheme.FILE.wrap(imageUrl);
         //ImageLoader.getInstance().displayImage(url, mImageView);
-        mImageView.setImageBitmap(BitmapFactory.decodeFile(imageUrl));
+
+        //max=4096*4096
+        int imgMaxWidth = 600;
+        int imgMaxHeight = 4000;
+        Bitmap bitmap=decodeSampledBitmapFromFile(imageUrl, 600, 3000);
+        mImageView.setImageBitmap(bitmap);
 
         handler.sendEmptyMessageDelayed(START_ANIMATION_MSG, 600);
+    }
+
+    public int calculateInSampleSize(BitmapFactory.Options options,
+                                            int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        if(height>3000){
+            Toast.makeText(this,getString(R.string.about_fast_diary_tip1),Toast.LENGTH_SHORT).show();
+        }
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            double a= Math.ceil((float) height / (float) reqHeight);;
+            double b= Math.ceil((float) width / (float) reqWidth);
+            inSampleSize =(int)Math.max(a,b);
+        }
+        return inSampleSize;
+    }
+
+    public Bitmap decodeSampledBitmapFromFile(String filename,
+                                                     int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filename, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filename, options);
     }
 
     public void click_confirm_fab(View v){

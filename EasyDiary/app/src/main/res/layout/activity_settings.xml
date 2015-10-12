@@ -17,31 +17,180 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:gravity="start"
+        android:text="@string/settings_share"
         android:textColor="@color/sr_color_primary"
-        android:textSize="15sp"
-        android:text="@string/settings_share" />
+        android:textSize="15sp" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0.66dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@color/sr_color_primary"/>
+        android:background="@color/sr_color_primary" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="start"
+        android:text="@string/settings_share_picture_add_title"
         android:textColor="@color/sr_color_primary"
-        android:textSize="16sp"
-        android:text="@string/settings_share_picture_size" />
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/setting_share_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/settings_share_picture_add_title">
+
+            <EditText
+                android:id="@+id/share_add_title_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/settings_share_picture_add_title"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/sr_color_primary" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.66dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/alpha_30_sr_color_primary" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="start"
+        android:text="@string/settings_share_picture_swith_date_title"
+        android:textColor="@color/sr_color_primary"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:text="@string/settings_share_picture_swith_date_title_tips"
+            android:textColor="@color/alpha_50_sr_color_primary"
+            android:textSize="13sp" />
+
+        <com.rey.material.widget.CheckBox
+            android:id="@+id/share_title_cb"
+            style="@style/Material.Drawable.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:text="@string/settings_is_not_showing"
+            android:textColor="@color/sr_color_primary" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.66dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/alpha_30_sr_color_primary" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="start"
+        android:text="@string/settings_share_picture_swith_app_name"
+        android:textColor="@color/sr_color_primary"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/settings_share_picture_swith_app_name_tips"
+            android:textColor="@color/alpha_50_sr_color_primary"
+            android:textSize="13sp" />
+
+        <com.rey.material.widget.CheckBox
+            android:id="@+id/share_app_tag_cb"
+            style="@style/Material.Drawable.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:text="@string/settings_is_not_showing"
+            android:textColor="@color/sr_color_primary" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0.66dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/alpha_30_sr_color_primary" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="start"
+        android:text="@string/settings_share_picture_size"
+        android:textColor="@color/sr_color_primary"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,32 +198,32 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:orientation="horizontal">
-
-        <SeekBar
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/picture_size_seekBar"
-            android:layout_gravity="center_horizontal" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/sr_color_primary"
-            android:textSize="16sp"
-            android:text="0.5"/>
+            android:text="@string/settings_share_picture_size_tips"
+            android:textColor="@color/alpha_50_sr_color_primary"
+            android:textSize="13sp" />
 
-        <Button
-            android:layout_width="wrap_content"
+        <com.rey.material.widget.Slider
+            android:id="@+id/share_pic_size_slider"
+            style="@style/Material.Widget.Slider.Discrete"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/save"/>
+            android:layout_weight="1"
+            android:gravity="center"
+            app:sl_maxValue="100"
+            app:sl_minValue="20"
+            app:sl_value="100" />
 
     </LinearLayout>
-
 
 
 </LinearLayout>
