@@ -95,12 +95,12 @@
     <string name="about_fast_diary_tip1">快日记是一款快速写日记的极简工具，快日记的灵感来自于我们每天都会使用的聊天App，通过聊天的形式来记录日记，就像和未来的自己聊天一样，采用聊天的对话框，以文字、图片、语音为载体来快速记录下生活中的点滴，再以卡片的形式将每天的日记整理出来，以供查看、搜索，同时还可以将日记快速分享、导出到第三方平台。</string>
     <string name="about_fast_diary_tip2">快日记整体采用material design风格设计，交互友好，界面美观，是极简主义的践行者。</string>
     <string name="about_fast_diary_tip3">快日记的分享功能同时也是发长微博、长朋友圈的神器，快来试试吧！</string>
-    <string name="about_fast_diary_tip4">写给未来的自己！快日记！</string>
-    <string name="about_fast_diary_tip5">发长微博神器！快日记！</string>
+    <string name="about_fast_diary_tip4">写给未来的自己！</string>
+    <string name="about_fast_diary_tip5">发长微博神器！</string>
     <string name="about_fast_diary_tip6">极简日记本！</string>
     <string name="about_fast_diary_tip7">Simple is cool! Fast is cool!</string>
     <string name="about_fast_diary_tip8">用语音来快速记日记！</string>
-    <string name="about_fast_diary_tip9">快日记！极简主义者！</string>
+    <string name="about_fast_diary_tip9">极简主义者！</string>
 
     <string name="about_convert_diary_tips">日记转换成图片失败！可能是日记中图片太多，请在设置中缩小图片的显示后重试！</string>
     <string name="about_show_diary_tips">图片过长，显示的时候已进行压缩，分享的原图没有压缩，仍以高质量图片发送</string>

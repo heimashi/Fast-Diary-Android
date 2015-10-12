@@ -52,6 +52,7 @@ import cn.swang.ui.activity.ShareDayCardActivity;
 import cn.swang.ui.adapter.RecyclerViewAdapter;
 import cn.swang.ui.base.BaseFragment;
 import cn.swang.ui.view.AudioRecorderButton;
+import cn.swang.ui.view.FastDiaryTipsView;
 import cn.swang.ui.view.MyDialog;
 import cn.swang.utils.CommonUtils;
 import cn.swang.utils.MediaManager;
@@ -66,7 +67,8 @@ public class ListFragment extends BaseFragment implements ShareBitmapUtils.Conve
     private static final int REQUEST_CODE_LONG_DIARY = 1222;
     private static final int REQUEST_CODE_UPDATE_DIARY = 1333;
     private long mDayId = -1;
-    private LinearLayout mLinearLayout,mEmptyView;
+    private FastDiaryTipsView mEmptyView;
+    private LinearLayout mLinearLayout;
     private RecyclerView mRecyclerView;
     private TextInputLayout mInputView;
     private EditText mContentEt;
@@ -91,7 +93,7 @@ public class ListFragment extends BaseFragment implements ShareBitmapUtils.Conve
         mLinearLayout =
                 (LinearLayout) inflater.inflate(R.layout.list_fragment, container, false);
         mRecyclerView = (RecyclerView) mLinearLayout.findViewById(R.id.recycler_view);
-        mEmptyView = (LinearLayout)mLinearLayout.findViewById(R.id.list_empty_view);
+        mEmptyView = (FastDiaryTipsView)mLinearLayout.findViewById(R.id.list_empty_view_2);
         mInputView = (TextInputLayout) mLinearLayout.findViewById(R.id.input_layout);
         fabContainer = (FrameLayout) mLinearLayout.findViewById(R.id.other_btn_view);
         mFab0 = (FloatingActionButton) mLinearLayout.findViewById(R.id.list_fab0);
@@ -129,6 +131,7 @@ public class ListFragment extends BaseFragment implements ShareBitmapUtils.Conve
             });
         }
         audioChoiceBtn.setOnClickListener(this);
+        mEmptyView.setOnClickListener(this);
         mSentTv.setOnClickListener(this);
         mSentBtn.setOnClickListener(this);
         mFab0.setOnClickListener(this);
@@ -474,6 +477,9 @@ public class ListFragment extends BaseFragment implements ShareBitmapUtils.Conve
                 break;
             case R.id.list_fab3:
                 writeLongDiary();
+                break;
+            case R.id.list_empty_view_2:
+                mEmptyView.updateState();
                 break;
             case R.id.audio_btn_choice:
                 if (isRecordeStateSelected) {

@@ -11,25 +11,29 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <LinearLayout
-            android:id="@+id/list_empty_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/list_note_empty_view"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/alpha_50_sr_color_primary"
-                android:textSize="12sp"
-                android:text="@string/empty_tint"/>
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/list_empty_view"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:visibility="gone"-->
+            <!--android:gravity="center">-->
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/list_note_empty_view"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/alpha_50_sr_color_primary"-->
+                <!--android:textSize="12sp"-->
+                <!--android:text="@string/empty_tint"/>-->
+        <!--</LinearLayout>-->
+        <cn.swang.ui.view.FastDiaryTipsView
+            android:id="@+id/list_empty_view_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
