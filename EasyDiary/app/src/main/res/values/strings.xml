@@ -90,11 +90,14 @@
     <string name="about_fast_diary_tip2">Fast Diary overall use of material design style design, interactive and friendly, attractive interface</string>
     <string name="about_fast_diary_tip5">Long microblogging! </string>
     <string name="about_fast_diary_tip6">Minimalist diary!</string>
-    <string name="about_fast_diary_tip7">Simple is cool! Fast is cool!</string>
+    <string name="about_fast_diary_tip7">Fast is cool!</string>
+    <string name="empty_tips">it\'s empty!</string>
+    <string name="feedback_to_developer_2">Click here to leave contact information, further feedback</string>
+    <string name="error_tips">net is not work,please try later!</string>
     <string name="about_convert_diary_tips">Convert failed! Please refine your picture in settings and try again!</string>
     <string name="about_fast_diary_tip3">Fast Diary can easily to write long microblogging!</string>
     <string name="about_fast_diary_tip4">Write for the future!</string>
-    <string name="about_fast_diary_tip8">With a voice to quickly keep a diary!</string>
+    <string name="about_fast_diary_tip8">Use voice to keep a diary!</string>
     <string name="about_fast_diary_tip9"> Enjoy yourself!</string>
     <string name="about_show_diary_tips">Picture is too long, when the display has been compressed, the original share no compression</string>
     <string name="settings_is_not_showing">OFF</string>
@@ -107,4 +110,11 @@
     <string name="settings_share_picture_swith_date_title">Show date when sharing</string>
     <string name="settings_share_picture_swith_date_title_tips">whether display date on top right corner</string>
     <string name="tb_munion_tip_download_prefix">loading:</string>
+    <string name="empty_tips1">Use dialog to write diary</string>
+    <string name="empty_tips2">Slide up to show dialog</string>
+    <string name="empty_tips3">Slide down to show sidebar and search</string>
+    <string name="empty_tips4">Click + to show other buttons</string>
+    <string name="empty_tips5">Use your voice to write diary</string>
+    <string name="empty_tips6">Diary convert to a picture when sharing</string>
+    <string name="empty_tips7">A Long microblogging tool</string>
 </resources>

@@ -43,6 +43,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        if(isLessThanKitkat){
+            LinearLayout root = (LinearLayout)findViewById(R.id.root_view);
+            root.setPadding(0,0,0,0);
+        }
         isFromHome = getIntent().getBooleanExtra(IS_FROM_HOME_EXTRA,false);
         if(isFromHome){
             aboutUsTv = (TextView)findViewById(R.id.id_about_us_tv);

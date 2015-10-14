@@ -91,13 +91,16 @@ public class ShareBitmapUtils {
         //String chinese = "^[\u4e00-\u9fa5]+$";
         String english = "^[a-zA-Z]+$";
         String sign = "[,.!~/';<>?]";
+        String sign2 = "[ ]";
         int k = 0;
-        int length = textWordCount * 2;
+        float length = textWordCount * 2;
         for (int i = k; i < text.length(); i++) {
             String ch = text.substring(i, i + 1);
             if (ch.matches(english) || ch.matches(sign)) {
                 length--;
-            } else {
+            }else if(ch.matches(sign2)){
+                length-=0.5f;
+            } else{
                 length -= 2;
             }
             if (length <= 1) {

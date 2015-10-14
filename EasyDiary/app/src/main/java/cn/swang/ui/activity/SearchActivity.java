@@ -53,6 +53,10 @@ public class SearchActivity extends BaseActivity implements Handler.Callback,DbS
         //overridePendingTransition(R.anim.scale_in2, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        if(isLessThanKitkat){
+            LinearLayout root = (LinearLayout)findViewById(R.id.root_view);
+            root.setPadding(0,0,0,0);
+        }
         searchEditText = (EditText) findViewById(R.id.search_text_edit);
         mRecyclerView = (RecyclerView) findViewById(R.id.search_activity_recycler_view);
         backButton = (ImageView)findViewById(R.id.search_back_view);

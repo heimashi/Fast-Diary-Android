@@ -131,7 +131,6 @@ public class ListFragment extends BaseFragment implements ShareBitmapUtils.Conve
             });
         }
         audioChoiceBtn.setOnClickListener(this);
-        mEmptyView.setOnClickListener(this);
         mSentTv.setOnClickListener(this);
         mSentBtn.setOnClickListener(this);
         mFab0.setOnClickListener(this);
@@ -477,9 +476,6 @@ public class ListFragment extends BaseFragment implements ShareBitmapUtils.Conve
                 break;
             case R.id.list_fab3:
                 writeLongDiary();
-                break;
-            case R.id.list_empty_view_2:
-                mEmptyView.updateState();
                 break;
             case R.id.audio_btn_choice:
                 if (isRecordeStateSelected) {

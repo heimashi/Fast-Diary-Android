@@ -18,23 +18,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/diary_is_empty_tint"
-        android:textColor="@color/alpha_50_sr_color_primary"
-        android:textSize="12sp" />
+        android:textColor="@color/alpha_40_sr_color_primary"
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/empty_text_view2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/about_fast_diary_tip4"
-        android:textColor="@color/alpha_50_sr_color_primary"
+        android:textColor="@color/alpha_40_sr_color_primary"
         android:visibility="gone"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 
     <ImageView
         android:visibility="gone"
         android:id="@+id/empty_image_view2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/list_note_empty_view" />
+        android:src="@drawable/fast_diary_empty_img" />
 
 </LinearLayout>

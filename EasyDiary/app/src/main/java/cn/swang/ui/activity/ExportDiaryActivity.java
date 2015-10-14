@@ -36,6 +36,10 @@ public class ExportDiaryActivity extends BaseActivity implements LoadDiaryListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_list);
+        if(isLessThanKitkat){
+            LinearLayout root = (LinearLayout)findViewById(R.id.root_view);
+            root.setPadding(0,0,0,0);
+        }
         mRecyclerView = (RecyclerView) findViewById(R.id.search_activity_recycler_view);
         pv_linear = (ProgressView)findViewById(R.id.progress_pv_linear);
         mEmptyLayout = (LinearLayout)findViewById(R.id.list_empty_view);

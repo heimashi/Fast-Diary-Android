@@ -88,6 +88,8 @@ public class BaseActivity extends AppCompatActivity {
     };
 
 
+    protected boolean isLessThanKitkat = true;
+
     /**
      * set status bar translucency
      *
@@ -95,6 +97,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void setTranslucentStatus(boolean on) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            isLessThanKitkat = false;
             Window win = getWindow();
             WindowManager.LayoutParams winParams = win.getAttributes();
             final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;

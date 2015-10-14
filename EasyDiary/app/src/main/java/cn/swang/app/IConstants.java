@@ -14,6 +14,7 @@ public interface IConstants {
     String SHARE_SAVE_AUDIO_PATH = "/FastDiary/Audio/";
     String AUDIO_RECORD_SUFFIX = ".amr";
     String WEBCONTEXT = "http://115.27.37.57:8080/AppServer";
+    String WEBCONTEXT_SAE = "http://fastdiary.sinaapp.com/";
     String REQUEST_SUFFIX = ".do";
 
 }

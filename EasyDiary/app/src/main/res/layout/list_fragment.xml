@@ -30,15 +30,16 @@
                 <!--android:textSize="12sp"-->
                 <!--android:text="@string/empty_tint"/>-->
         <!--</LinearLayout>-->
-        <cn.swang.ui.view.FastDiaryTipsView
-            android:id="@+id/list_empty_view_2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <cn.swang.ui.view.FastDiaryTipsView
+            android:id="@+id/list_empty_view_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <FrameLayout
             android:id="@+id/other_btn_view"

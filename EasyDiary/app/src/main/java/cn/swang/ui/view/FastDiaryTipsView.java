@@ -1,33 +1,22 @@
 package cn.swang.ui.view;
 
 import android.content.Context;
-import android.media.MediaRecorder;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.swang.R;
 import cn.swang.app.GlobalData;
-import cn.swang.app.IConstants;
-import cn.swang.utils.AudioManager;
-import cn.swang.utils.RecordDialogManager;
 
 /**
  * Created by sw on 2015/9/14.
@@ -40,10 +29,12 @@ public class FastDiaryTipsView extends LinearLayout{
     private final Timer timer = new Timer();
     private TimerTask task;
     private Handler handler;
+    Animation inAnim,inAnim2,outAnim,outAnim2;
 
     public FastDiaryTipsView(Context context) {
         this(context, null);
     }
+
 
     public FastDiaryTipsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -72,13 +63,31 @@ public class FastDiaryTipsView extends LinearLayout{
                         handler.sendEmptyMessage(111);
                     }
                 };
-                timer.schedule(task, 5000, 5000);
+                timer.schedule(task, 2000, 5000);
             }
         }).start();
+
+        inAnim = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.image_rotate);
+        inAnim2 = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.fade_in);
+        outAnim = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.image_rotate_back);
+        outAnim2 = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.fade_out);
+
+        mImageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateState();
+            }
+        });
+        mImageView2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateState();
+            }
+        });
     }
 
     //ArrayList<String> array = new ArrayList<String>();
-    String array[] = {GlobalData.app().getString(R.string.empty_tint),GlobalData.app().getString(R.string.about_fast_diary_tip4),GlobalData.app().getString(R.string.about_fast_diary_tip5),GlobalData.app().getString(R.string.about_fast_diary_tip6),GlobalData.app().getString(R.string.about_fast_diary_tip7),GlobalData.app().getString(R.string.about_fast_diary_tip8),GlobalData.app().getString(R.string.about_fast_diary_tip9)};
+    String array[] = {GlobalData.app().getString(R.string.empty_tips1),GlobalData.app().getString(R.string.empty_tips2),GlobalData.app().getString(R.string.empty_tips3),GlobalData.app().getString(R.string.empty_tips4),GlobalData.app().getString(R.string.empty_tips5),GlobalData.app().getString(R.string.empty_tips6),GlobalData.app().getString(R.string.empty_tips7),GlobalData.app().getString(R.string.about_fast_diary_tip4)};
 
     int count = 0;
     public void updateState(){
@@ -87,11 +96,9 @@ public class FastDiaryTipsView extends LinearLayout{
             mTextView2.setText(array[count++]);
             mTextView2.setVisibility(VISIBLE);
             mImageView2.setVisibility(VISIBLE);
-            Animation inAnim = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.scale_in2);
-            Animation outAnim = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.top_out);
-            mTextView2.startAnimation(inAnim);
+            mTextView2.startAnimation(inAnim2);
             mImageView2.startAnimation(inAnim);
-            mTextView.startAnimation(outAnim);
+            mTextView.startAnimation(outAnim2);
             mImageView.startAnimation(outAnim);
             mTextView.setVisibility(GONE);
             mImageView.setVisibility(GONE);
@@ -99,11 +106,9 @@ public class FastDiaryTipsView extends LinearLayout{
             mTextView.setText(array[count++]);
             mTextView.setVisibility(VISIBLE);
             mImageView.setVisibility(VISIBLE);
-            Animation inAnim = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.scale_in2);
-            Animation outAnim = AnimationUtils.loadAnimation(GlobalData.app(), R.anim.top_out);
-            mTextView.startAnimation(inAnim);
+            mTextView.startAnimation(inAnim2);
             mImageView.startAnimation(inAnim);
-            mTextView2.startAnimation(outAnim);
+            mTextView2.startAnimation(outAnim2);
             mImageView2.startAnimation(outAnim);
             mTextView2.setVisibility(GONE);
             mImageView2.setVisibility(GONE);
