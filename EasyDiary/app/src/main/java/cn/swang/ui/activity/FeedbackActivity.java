@@ -52,14 +52,14 @@ public class FeedbackActivity extends BaseActivity {
         mTextInputLayout = (TextInputLayout)findViewById(R.id.feedback_text_input_layout);
         mTextInputLayout.setHint(getString(R.string.feedback_tint));
         mEditText=(EditText)findViewById(R.id.feedback_edit_text);
-        mTextView = (TextView)findViewById(R.id.umeng_feedback);
-        mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FeedbackAgent agent = new FeedbackAgent(FeedbackActivity.this);
-                agent.startFeedbackActivity();
-            }
-        });
+//        mTextView = (TextView)findViewById(R.id.umeng_feedback);
+//        mTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FeedbackAgent agent = new FeedbackAgent(FeedbackActivity.this);
+//                agent.startFeedbackActivity();
+//            }
+//        });
     }
 
     @Override
@@ -77,6 +77,7 @@ public class FeedbackActivity extends BaseActivity {
                 finish();
                 return true;
             case R.id.id_feedback_send:
+                CommonUtils.hideKeyboard(mEditText);
                 final String msg = mEditText.getText().toString().trim();
                 if(TextUtils.isEmpty(msg)){
                     Toast.makeText(FeedbackActivity.this, getString(R.string.empty_tips), Toast.LENGTH_SHORT).show();
@@ -86,6 +87,7 @@ public class FeedbackActivity extends BaseActivity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
+                                mEditText.setText("");
                                 if(TextUtils.isEmpty(response)){
                                     Toast.makeText(FeedbackActivity.this, getString(R.string.error_tips), Toast.LENGTH_SHORT).show();
                                 }else {

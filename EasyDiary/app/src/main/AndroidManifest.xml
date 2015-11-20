@@ -137,7 +137,7 @@
             android:value="561dbe1ee0f55a033900782b" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="wandoujia" />
+            android:value="test" />
 
     </application>
 

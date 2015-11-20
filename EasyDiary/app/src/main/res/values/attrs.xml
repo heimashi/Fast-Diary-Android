@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="titleText" format="string" />
+    <attr name="ttitleTextColor" format="color" />
+    <attr name="titleTextSize" format="dimension" />
+
+    <declare-styleable name="TestViewStyle">
+        <attr name="titleText" />
+        <attr name="ttitleTextColor" />
+        <attr name="titleTextSize" />
+    </declare-styleable>
+
+</resources>

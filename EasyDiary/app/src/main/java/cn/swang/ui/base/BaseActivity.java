@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,15 +36,35 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(useActivityAnimation()){
-            overridePendingTransition(R.anim.right_in,R.anim.left_out);
+            enterAnimation();
         }
         super.onCreate(savedInstanceState);
         LOG_TAG = this.getClass().getSimpleName();
+
+
 
         //SmartBarUtils.hide(getWindow().getDecorView());
         setTranslucentStatus(isApplyStatusBarTranslucency());
         if (isApplyKitKatTranslucency()) {
             setSystemBarTintDrawable(getResources().getDrawable(R.drawable.sr_primary));
+        }
+    }
+
+    void enterAnimation(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide slide= (Slide) TransitionInflater.from(this).inflateTransition(R.transition.transition_slide);
+            getWindow().setEnterTransition(slide);
+        }else {
+            overridePendingTransition(R.anim.right_in, R.anim.left_out);
+        }
+    }
+
+    void exitAnimation(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide fade= (Slide) TransitionInflater.from(this).inflateTransition(R.transition.transition_fade);
+            getWindow().setExitTransition(fade);
+        }else {
+            overridePendingTransition(0,R.anim.scale_out);
         }
     }
 
@@ -143,7 +165,7 @@ public class BaseActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         if(useActivityAnimation()){
-            overridePendingTransition(0,R.anim.scale_out);
+            exitAnimation();
         }
     }
 

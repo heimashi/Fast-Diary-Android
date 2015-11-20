@@ -159,6 +159,7 @@ public class HomeActivity extends BaseActivity {
 //                                startActivityByMyself(RegisterActivity.class, false);
 //                                break;
                             case R.id.nav_home_search:
+                                //startActivityByMyself(LoginActivity.class, false);
                                 startActivityByMyself(SearchActivity.class,false);
                                 break;
                             case R.id.nav_home_share_diary:

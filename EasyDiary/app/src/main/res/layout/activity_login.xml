@@ -63,7 +63,7 @@
     </android.support.design.widget.TextInputLayout>
 
 
-    <com.rey.material.widget.Button
+    <cn.swang.ui.widget.Button
         android:id="@+id/email_sign_in_button"
         android:layout_width="160dp"
         android:layout_height="@dimen/bt_height"
@@ -74,6 +74,14 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="30dp"
         app:rd_enable="true" />
+
+    <cn.swang.ui.widget.TestView
+        android:id="@+id/test_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:titleText="sfdfsfd"
+        app:titleTextSize="16dp"
+        app:ttitleTextColor="@color/alpha_70_sr_color_primary"/>
 
 
 </LinearLayout>

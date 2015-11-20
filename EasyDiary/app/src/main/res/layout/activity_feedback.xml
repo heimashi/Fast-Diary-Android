@@ -32,6 +32,7 @@
         android:background="@drawable/button_bg_2"
         android:layout_gravity="right"
         android:padding="8dp"
+        android:visibility="gone"
         android:text="@string/feedback_to_developer_2"
         android:textColor="@color/white"
         android:textSize="15sp" />
