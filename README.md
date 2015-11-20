@@ -1,2 +1,3 @@
 # EASYDIARY
-test
+Fast Diary
+A tool for write diary.
