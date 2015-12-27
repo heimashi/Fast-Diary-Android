@@ -1,5 +1,5 @@
-# EASYDIARY
-Fast Diary(快日记) 已经上架[应用宝](http://android.myapp.com/myapp/detail.htm?apkName=cn.swang)、[豌豆荚](http://www.wandoujia.com/apps/cn.swang)、百度、360等应用市场，欢迎下载
+# Fast Diary
+Fast Diary(快日记) 已经上架[应用宝](http://android.myapp.com/myapp/detail.htm?apkName=cn.swang)、[豌豆荚](http://www.wandoujia.com/apps/cn.swang)、[百度](http://shouji.baidu.com/software/item?docid=8128729&from=as)等应用市场，欢迎下载
 
 # About
 * RecycleView(瀑布流布局)
